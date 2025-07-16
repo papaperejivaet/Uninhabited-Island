@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.JsonMapConvertingException;
 import model.properties.Encyclopedia;
+import model.properties.LifeFormInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class JsonHandler
 {
     private static final ObjectMapper mapper = new ObjectMapper();
 
+    private JsonHandler(){}
 
     /**
      * Загружает JSON-файл и преобразовывает его в {@code Map<Encyclopedia, T>}.
@@ -89,7 +91,7 @@ public class JsonHandler
     }
 
     /**
-     * Загружает JSON-файл с вложенной структурой {@code Map<String, Map<String, T>>} и преобразует его в
+     * Загружает JSON-файл с вложенной структурой {@code Map<String, Map<String, T>>} и преобразовывает его в
      * {@code Map<Encyclopedia, Map<Encyclopedia, T>>}.
      * <p>
      * Параметр {@code valueClass} передаётся для совместимости с сигнатурой,
@@ -142,4 +144,37 @@ public class JsonHandler
                         () -> new EnumMap<>(Encyclopedia.class)
                 ));
     }
+
+    /**
+     * Загружает и десериализует информацию о живых существах из JSON-файла,
+     * возвращая отображение {@link Encyclopedia} → {@link LifeFormInfo}.
+     * <p>
+     * Ожидаемый формат JSON:
+     * <pre>{@code
+     * {
+     *   "WOLF": {
+     *     "weight": 50.0,
+     *     "maxCellAmount": 30,
+     *     "maxSpeed": 3,
+     *     "saturation": 8.0,
+     *     "maxAge": 6.0
+     *   },
+     *   ...
+     * }
+     * }</pre>
+     * Значения ключей должны совпадать (регистр не важен) с {@code name()}  элементов {@link Encyclopedia}.
+     * <p>
+     * Используется универсальный метод {@code parseData()} с поддержкой {@code TypeReference}
+     * для преобразования вложенных структур.
+     *
+     * @param path путь к JSON-файлу с параметрами существ
+     * @return отображение {@code Encyclopedia → LifeFormInfo}, содержащее параметры всех существ
+     * @throws JsonMapConvertingException если произошла ошибка при чтении или преобразовании JSON
+     * @see JsonHandler#parseData(String, TypeReference)
+     */
+
+    public static Map<Encyclopedia, LifeFormInfo> parseLifeFormInfo(String path) {
+        return parseData(path, new TypeReference<>() {});
+    }
+
 }
