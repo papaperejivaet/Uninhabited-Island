@@ -34,10 +34,10 @@ public final class LifeFormRegistry
         return lifeFormInfo.getMaxSpeed();
     }
 
-    public static Double getMaxSaturationAmount(Encyclopedia type)
+    public static Double getMaxSaturationLevel(Encyclopedia type)
     {
         LifeFormInfo lifeFormInfo = livingBeingInfo.get(type);
-        return lifeFormInfo.getSaturation();
+        return lifeFormInfo.getMaxSaturation();
     }
 
     public static Double getMaxAge(Encyclopedia type)

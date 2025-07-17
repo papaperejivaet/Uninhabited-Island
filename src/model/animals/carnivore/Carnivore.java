@@ -1,13 +1,13 @@
 package model.animals.carnivore;
 //Плотоядное
 
+import model.Cell;
 import model.animals.utility.Animal;
 
-public class Carnivore extends Animal
+public abstract class Carnivore extends Animal
 {
-
-    public Carnivore(int age, long saturationLevel)
+    protected Carnivore(Cell cell, double age, double saturationLevel)
     {
-        super(age, saturationLevel);
+        super(cell, age, saturationLevel);
     }
 }

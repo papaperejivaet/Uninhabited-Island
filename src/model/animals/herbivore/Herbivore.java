@@ -1,12 +1,13 @@
 package model.animals.herbivore;
 
+import model.Cell;
 import model.animals.utility.Animal;
 
 //Травоядное
-public class Herbivore extends Animal
+public abstract class Herbivore extends Animal
 {
-    public Herbivore(int age, long saturationLevel)
+    protected Herbivore(Cell cell, double age, double saturationLevel)
     {
-        super(age, saturationLevel);
+        super(cell, age, saturationLevel);
     }
 }

@@ -1,6 +1,7 @@
 package controller;
 
 import exceptions.LifeFormCreatingException;
+import model.Cell;
 import model.animals.utility.Living;
 import model.properties.Encyclopedia;
 import model.properties.LifeFormRegistry;
@@ -8,17 +9,18 @@ import model.properties.LifeFormRegistry;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 public class LifeFormFactory
 {
-
-    public static Living create(Encyclopedia livingBeing, double age, double saturationLevel)
+    ThreadLocalRandom random = ThreadLocalRandom.current();
+    public static Living create(Encyclopedia livingBeing, Cell cell, double age, double saturationLevel)
     {
         try
         {
-            Constructor<?> constructor = livingBeing.getType().getConstructor(Double.class, Double.class);
-            return (Living) constructor.newInstance(age, saturationLevel);
+            Constructor<?> constructor = livingBeing.getType().getConstructor(Cell.class, double.class, double.class);
+            return (Living) constructor.newInstance(cell, age, saturationLevel);
         }
         catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e)
         {
@@ -26,8 +28,8 @@ public class LifeFormFactory
         }
     }
 
-    public static Living createNewborn(Encyclopedia livingBeing)
+    public static Living createNewborn(Encyclopedia livingBeing, Cell cell)
     {
-        return create(livingBeing, 0.0, LifeFormRegistry.getMaxSaturationAmount(livingBeing));
+        return create(livingBeing, cell, 0.0, LifeFormRegistry.getMaxSaturationLevel(livingBeing));
     }
 }

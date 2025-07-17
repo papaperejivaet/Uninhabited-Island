@@ -1,19 +1,24 @@
 package model.animals.utility;
 
 
+import model.Cell;
+
 
 public abstract class Animal extends LifeForm implements Mobile
 {
-
-    public Animal(int age, long saturationLevel)
+    protected Animal(Cell cell, double age, double saturationLevel)
     {
-        super(age, saturationLevel);
+        super(cell, age, saturationLevel);
     }
 
     @Override
-    public void move()
+    public void move(Cell cell)
     {
-
+        currentCell.removeLivingBeing(this);
+        currentCell = cell;
+        currentCell.addLivingBeing(this);
+        x = cell.getX();
+        y = cell.getY();
     }
 
 }

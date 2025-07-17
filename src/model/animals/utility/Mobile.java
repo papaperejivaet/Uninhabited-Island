@@ -1,6 +1,8 @@
 package model.animals.utility;
 
+import model.Cell;
+
 public interface Mobile
 {
-    void move();
+    void move(Cell cell);
 }

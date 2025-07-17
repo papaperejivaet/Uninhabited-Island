@@ -10,6 +10,6 @@ public class LifeFormInfo
     private double weight;
     private int maxCellAmount;
     private int maxSpeed;
-    private double saturation;
+    private double maxSaturation;
     private double maxAge;
 }
