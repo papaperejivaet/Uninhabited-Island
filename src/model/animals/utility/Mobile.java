@@ -1,6 +1,6 @@
 package model.animals.utility;
 
-import model.Cell;
+import model.main.Cell;
 
 public interface Mobile
 {

@@ -1,7 +1,7 @@
 package model.animals.carnivore;
 //Плотоядное
 
-import model.Cell;
+import model.main.Cell;
 import model.animals.utility.Animal;
 
 public abstract class Carnivore extends Animal

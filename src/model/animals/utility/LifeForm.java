@@ -1,9 +1,7 @@
 package model.animals.utility;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import model.Cell;
+import model.main.Cell;
 import model.properties.DeathCause;
 import model.properties.Encyclopedia;
 import model.properties.GeneralConstants;
@@ -18,12 +16,14 @@ public abstract class LifeForm implements Living, Consumable
 {
     protected ReentrantLock lock = new ReentrantLock();
 
+    protected Encyclopedia livinBeingType = Encyclopedia.getLivingBeing(this.getClass());
+
     double age;
     double saturationLevel;
-    double maxSaturationLevel = LifeFormRegistry.getMaxSaturationLevel(Encyclopedia.getLivingBeing(this.getClass()));
+    double maxAge = LifeFormRegistry.getMaxAge(livinBeingType);
+    double maxSaturationLevel = LifeFormRegistry.getMaxSaturationLevel(livinBeingType);
 
     boolean isBred = false; // Размножалось ли данное существо в этом цикле?
-    @Getter
     boolean isDead = false;
 
     protected Map<Encyclopedia, Integer> currentPosition;
@@ -46,6 +46,9 @@ public abstract class LifeForm implements Living, Consumable
     public void die(DeathCause cause)
     {
         isDead = true;
+        isBred = false;
+        currentCell.removeLivingBeing(this);
+        LifeFormRegistry.registerDeath(livinBeingType, cause);
     }
 
     @Override
@@ -56,19 +59,19 @@ public abstract class LifeForm implements Living, Consumable
             return 0.0;
         }
         die(DeathCause.EATEN);
-        return LifeFormRegistry.getWeight(Encyclopedia.getLivingBeing(this.getClass()));
+        return LifeFormRegistry.getWeight(livinBeingType);
     }
 
     @Override
     public void reproduce(Living livingBeing)
     {
-
-        if (livingBeing instanceof LifeForm lifeForm && !isDead)
+        if (livingBeing instanceof LifeForm lifeForm &&
+                !isDead && !lifeForm.isDead &&
+                !isBred && !lifeForm.isBred)
         {
             isBred = true;
             lifeForm.isBred = true;
         }
-
     }
 
     @Override
@@ -105,19 +108,26 @@ public abstract class LifeForm implements Living, Consumable
     @Override
     public void grow()
     {
-        if (!isDead)
+        if (isDead)
         {
+            return;
+        }
+
+        if (age == LifeFormRegistry.getMaxAge(livinBeingType))
+        {
+            die(DeathCause.NATURAL);
+        }
             isBred = false;
             age += GeneralConstants.CYCLE_TIME * 0.01;
-        }
+
     }
 
     protected Integer getCurrentEatingChances(Consumable food)
     {
         if (food instanceof Animal animal)
         {
-            return LifeFormRegistry.getEatingChances(Encyclopedia.getLivingBeing(this.getClass()),
-                    Encyclopedia.getLivingBeing(animal.getClass()));
+            Encyclopedia prey = Encyclopedia.getLivingBeing(animal.getClass());
+            return LifeFormRegistry.getEatingChances(livinBeingType, prey);
         }
         else
         {

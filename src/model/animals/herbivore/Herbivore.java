@@ -1,6 +1,6 @@
 package model.animals.herbivore;
 
-import model.Cell;
+import model.main.Cell;
 import model.animals.utility.Animal;
 
 //Травоядное

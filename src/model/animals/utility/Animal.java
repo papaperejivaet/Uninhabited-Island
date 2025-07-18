@@ -1,7 +1,7 @@
 package model.animals.utility;
 
 
-import model.Cell;
+import model.main.Cell;
 
 
 public abstract class Animal extends LifeForm implements Mobile

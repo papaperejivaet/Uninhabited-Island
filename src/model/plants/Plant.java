@@ -1,6 +1,6 @@
 package model.plants;
 
-import model.Cell;
+import model.main.Cell;
 import model.animals.utility.Consumable;
 import model.animals.utility.LifeForm;
 import model.animals.utility.Sun;
