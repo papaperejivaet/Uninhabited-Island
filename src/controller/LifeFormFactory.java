@@ -1,6 +1,8 @@
 package controller;
 
 import exceptions.LifeFormCreatingException;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import model.main.Cell;
 import model.animals.utility.Living;
 import model.properties.Encyclopedia;
@@ -13,7 +15,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LifeFormFactory
 {
 

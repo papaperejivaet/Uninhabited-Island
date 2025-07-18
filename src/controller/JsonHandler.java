@@ -3,6 +3,8 @@ package controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.JsonMapConvertingException;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import model.properties.Encyclopedia;
 import model.properties.LifeFormInfo;
 
@@ -18,11 +20,10 @@ import java.util.stream.Collectors;
  * <p>
  * Использует {@link ObjectMapper} из библиотеки Jackson.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonHandler
 {
     private static final ObjectMapper mapper = new ObjectMapper();
-
-    private JsonHandler(){}
 
     /**
      * Загружает JSON-файл и преобразовывает его в {@code Map<Encyclopedia, T>}.
