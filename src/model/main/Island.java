@@ -39,18 +39,28 @@ public class Island
     private static void populateRandomly()
     {
         int livingBeingCounter = Encyclopedia.values().length;
-        for(int i = 0; i < livingBeingCounter; i++)
+        for (int i = 0; i < livingBeingCounter; i++)
         {
             executor.submit(new PopulationTask(i));
         }
     }
 
 
-    public static Cell getCell(int x, int y)
+    static Cell getCell(int x, int y)
     {
         return islandMap[x][y];
     }
 
+    private static void startSimulation()
+    {
+        for (Cell[] cells : islandMap)
+        {
+            for (Cell cell : cells)
+            {
+                executor.submit(new SimulationTask(cell));
+            }
+        }
+    }
 
 
 }

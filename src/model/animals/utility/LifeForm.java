@@ -16,15 +16,17 @@ public abstract class LifeForm implements Living, Consumable
 {
     protected ReentrantLock lock = new ReentrantLock();
 
-    protected Encyclopedia livinBeingType = Encyclopedia.getLivingBeing(this.getClass());
+    protected Encyclopedia livingBeingType = Encyclopedia.getLivingBeing(this.getClass());
 
     double age;
     double saturationLevel;
-    double maxAge = LifeFormRegistry.getMaxAge(livinBeingType);
-    double maxSaturationLevel = LifeFormRegistry.getMaxSaturationLevel(livinBeingType);
+    double maxAge = LifeFormRegistry.getMaxAge(livingBeingType);
+    double maxSaturationLevel = LifeFormRegistry.getMaxSaturationLevel(livingBeingType);
+    int maxSpeed = LifeFormRegistry.getMaxSpeed(livingBeingType);
 
-    boolean isBred = false; // Размножалось ли данное существо в этом цикле?
-    boolean isDead = false;
+    boolean hasBred; // Размножалось ли данное существо в этом цикле?
+    boolean hasConsumed;
+    boolean isDead;
 
     protected Map<Encyclopedia, Integer> currentPosition;
     int x;
@@ -46,9 +48,8 @@ public abstract class LifeForm implements Living, Consumable
     public void die(DeathCause cause)
     {
         isDead = true;
-        isBred = false;
+        hasBred = false;
         currentCell.removeLivingBeing(this);
-        LifeFormRegistry.registerDeath(livinBeingType, cause);
     }
 
     @Override
@@ -59,7 +60,7 @@ public abstract class LifeForm implements Living, Consumable
             return 0.0;
         }
         die(DeathCause.EATEN);
-        return LifeFormRegistry.getWeight(livinBeingType);
+        return LifeFormRegistry.getWeight(livingBeingType);
     }
 
     @Override
@@ -67,10 +68,10 @@ public abstract class LifeForm implements Living, Consumable
     {
         if (livingBeing instanceof LifeForm lifeForm &&
                 !isDead && !lifeForm.isDead &&
-                !isBred && !lifeForm.isBred)
+                !hasBred && !lifeForm.hasBred)
         {
-            isBred = true;
-            lifeForm.isBred = true;
+            hasBred = true;
+            lifeForm.hasBred = true;
         }
     }
 
@@ -113,11 +114,11 @@ public abstract class LifeForm implements Living, Consumable
             return;
         }
 
-        if (age == LifeFormRegistry.getMaxAge(livinBeingType))
+        if (age == LifeFormRegistry.getMaxAge(livingBeingType))
         {
             die(DeathCause.NATURAL);
         }
-            isBred = false;
+            hasBred = false;
             age += GeneralConstants.CYCLE_TIME * 0.01;
 
     }
@@ -127,12 +128,17 @@ public abstract class LifeForm implements Living, Consumable
         if (food instanceof Animal animal)
         {
             Encyclopedia prey = Encyclopedia.getLivingBeing(animal.getClass());
-            return LifeFormRegistry.getEatingChances(livinBeingType, prey);
+            return LifeFormRegistry.getEatingChances(livingBeingType, prey);
         }
         else
         {
             return 100;
         }
+    }
+
+    public Encyclopedia getEncyclopediaName()
+    {
+        return livingBeingType;
     }
 
 

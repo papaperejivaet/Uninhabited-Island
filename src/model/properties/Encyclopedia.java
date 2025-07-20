@@ -5,10 +5,13 @@ import exceptions.NoSuchAnimalException;
 import lombok.Getter;
 import model.animals.carnivore.*;
 import model.animals.herbivore.*;
+import model.animals.utility.Animal;
 import model.animals.utility.Living;
 import model.plants.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public enum Encyclopedia
@@ -95,6 +98,19 @@ public enum Encyclopedia
             throw new NoSuchAnimalException("Такого животного нет в Энциклопедии!");
         }
         return livingBeing;
+    }
+
+    public static List<Encyclopedia> getByType(Class<? extends Living> type)
+    {
+        List<Encyclopedia> list = new ArrayList<>();
+        for (Map.Entry<Class<? extends Living>, Encyclopedia> entry : classes.entrySet())
+        {
+            if (entry.getKey().getSuperclass() == type)
+            {
+                list.add(entry.getValue());
+            }
+        }
+        return list;
     }
 
 }
