@@ -21,8 +21,7 @@ public abstract class Carnivore extends Animal
     @Override
     protected Consumable findFood()
     {
-        ThreadLocalRandom random = ThreadLocalRandom.current();
-
-        List<Integer>
+        //Т.к. Animal реализует Consumable
+        return (Consumable) currentCell.getRandomLiving(foodTypes);
     }
 }

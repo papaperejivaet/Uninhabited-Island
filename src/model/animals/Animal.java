@@ -5,6 +5,7 @@ import lombok.Getter;
 import model.LifeForm;
 import model.Mobile;
 import model.main.Cell;
+import model.main.Statistics;
 import model.properties.DeathCause;
 import model.properties.Registry;
 
@@ -48,7 +49,7 @@ public abstract class Animal extends LifeForm implements Mobile
     public void die(DeathCause cause)
     {
         super.die(cause);
-        Registry.registerDeath(livingBeingType, cause);
+        Statistics.registerDeath(livingBeingType, cause);
     }
 
     @Override
@@ -63,6 +64,7 @@ public abstract class Animal extends LifeForm implements Mobile
     private Cell getNewCell()
     {
         ThreadLocalRandom random = ThreadLocalRandom.current();
+        Integer maxSpeed = Registry.getMaxSpeed(livingBeingType);;
         int stepsAmount = random.nextInt(maxSpeed);
         List<Cell> neighboringCells;
         int cellNumber;
@@ -78,5 +80,14 @@ public abstract class Animal extends LifeForm implements Mobile
         return newCell;
     }
 
-
+    @Override
+    public boolean consume()
+    {
+        boolean hasConsumed = super.consume();
+        if (hasConsumed)
+        {
+            Statistics.registerConsumption(livingBeingType);
+        }
+        return hasConsumed;
+    }
 }

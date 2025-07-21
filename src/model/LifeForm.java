@@ -3,6 +3,7 @@ package model;
 import lombok.EqualsAndHashCode;
 import model.animals.Animal;
 import model.main.Cell;
+import model.main.Statistics;
 import model.properties.DeathCause;
 import model.properties.Encyclopedia;
 import model.properties.GeneralConstants;
@@ -21,9 +22,7 @@ public abstract class LifeForm implements Living, Consumable
 
     protected double age;
     protected double saturationLevel;
-    protected double maxAge = Registry.getMaxAge(livingBeingType);
-    protected double maxSaturationLevel = Registry.getMaxSaturationLevel(livingBeingType);
-    protected int maxSpeed = Registry.getMaxSpeed(livingBeingType);
+
 
     protected boolean hasBred; // Размножалось ли данное существо в этом цикле?
     protected boolean hasConsumed;
@@ -73,6 +72,10 @@ public abstract class LifeForm implements Living, Consumable
         {
             hasBred = true;
             lifeForm.hasBred = true;
+            if (lifeForm instanceof Animal)
+            {
+                Statistics.registerBreeding(livingBeingType);
+            }
         }
     }
 
@@ -81,7 +84,7 @@ public abstract class LifeForm implements Living, Consumable
     {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         Consumable food = findFood();
-        if (saturationLevel == maxSaturationLevel || isDead)
+        if (saturationLevel == Registry.getMaxSaturationLevel(livingBeingType) || isDead)
         {
             return false;
         }
@@ -101,6 +104,7 @@ public abstract class LifeForm implements Living, Consumable
     {
         double weight = food.beConsumed();
 
+        double maxSaturationLevel = Registry.getMaxSaturationLevel(livingBeingType);;
         saturationLevel += weight;
 
         if (saturationLevel > maxSaturationLevel)

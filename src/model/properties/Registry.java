@@ -1,7 +1,7 @@
 package model.properties;
 
 
-import controller.JsonHandler;
+import util.JsonHandler;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -13,13 +13,7 @@ public final class Registry
 {
     private static final Map<Encyclopedia, InfoDTO> livingBeingInfo = JsonHandler.parseLifeFormInfo("info.json");
 
-//    private static final Map<Encyclopedia, Map<Encyclopedia, Integer>> eatingChances =
-//            JsonHandler.parseCodependentData("eating_chances.json", Integer.class);
 
-    private static final Map<Encyclopedia, Integer> naturalDeaths = new ConcurrentHashMap<>();
-    private static final Map<Encyclopedia, Integer> eatenDeaths = new ConcurrentHashMap<>();
-    private static final Map<Encyclopedia, Integer> hungerDeaths = new ConcurrentHashMap<>();
-    private static final Map<Encyclopedia, Integer> accidentDeaths = new ConcurrentHashMap<>();
 
     public static Double getWeight(Encyclopedia type)
     {
@@ -58,27 +52,13 @@ public final class Registry
         return diet.get(prey);
     }
 
-    public static void registerDeath(Encyclopedia type, DeathCause deathCause)
+    public static char getDisplay(Encyclopedia type)
     {
-        switch (deathCause)
-        {
-            case NATURAL -> registerDeath(type, naturalDeaths);
-            case EATEN -> registerDeath(type, eatenDeaths);
-            case HUNGER -> registerDeath(type, hungerDeaths);
-            case ACCIDENT -> registerDeath(type, accidentDeaths);
-        }
+        InfoDTO lifeFormInfo = livingBeingInfo.get(type);
+        return lifeFormInfo.getDisplay();
     }
 
-    private static void registerDeath(Encyclopedia type, Map<Encyclopedia, Integer> deathRegistry)
-    {
-        if (!deathRegistry.containsKey(type))
-        {
-            deathRegistry.put(type, 1);
-            return;
-        }
-        Integer deathCount = deathRegistry.get(type);
-        deathRegistry.put(type, ++deathCount);
-    }
+
 
     public static Integer getStartAmount(Encyclopedia type)
     {

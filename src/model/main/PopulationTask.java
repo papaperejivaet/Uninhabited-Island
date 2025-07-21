@@ -1,6 +1,6 @@
 package model.main;
 
-import controller.LifeFormFactory;
+import model.factory.LifeFormFactory;
 import model.properties.Encyclopedia;
 import model.properties.GeneralConstants;
 import model.properties.Registry;

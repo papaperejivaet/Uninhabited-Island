@@ -5,6 +5,7 @@
     "maxSpeed": 3,
     "saturation": 8.0,
     "maxAge": 6.0,
+    "display": "🐺",
     "diet": {
       "HORSE": 10,
       "DEER": 15,
@@ -23,6 +24,7 @@
     "maxSpeed": 1,
     "saturation": 3.0,
     "maxAge": 20.0,
+    "display": "🐍",
     "diet": {
       "FOX": 15,
       "RABBIT": 20,
@@ -36,6 +38,7 @@
     "maxSpeed": 2,
     "saturation": 2.0,
     "maxAge": 5.0,
+    "display": "🦊",
     "diet": {
       "RABBIT": 70,
       "MOUSE": 90,
@@ -49,6 +52,7 @@
     "maxSpeed": 2,
     "saturation": 80.0,
     "maxAge": 20.0,
+    "display": "🐻",
     "diet": {
       "SNAKE": 80,
       "HORSE": 40,
@@ -68,6 +72,7 @@
     "maxSpeed": 3,
     "saturation": 1.0,
     "maxAge": 20.0,
+    "display": "🦅",
     "diet": {
       "FOX": 10,
       "RABBIT": 90,
@@ -81,6 +86,7 @@
     "maxSpeed": 4,
     "saturation": 60.0,
     "maxAge": 25.0,
+    "display": "🐎",
     "diet": {
       "GRASS": 100,
       "FLOWER": 100
@@ -92,6 +98,7 @@
     "maxSpeed": 4,
     "saturation": 50.0,
     "maxAge": 15.0,
+    "display": "🦌",
     "diet": {
       "GRASS": 100,
       "FLOWER": 100,
@@ -104,6 +111,7 @@
     "maxSpeed": 2,
     "saturation": 0.45,
     "maxAge": 1.5,
+    "display": "🐇",
     "diet": {
       "GRASS": 100,
       "FLOWER": 100
@@ -115,6 +123,7 @@
     "maxSpeed": 1,
     "saturation": 0.01,
     "maxAge": 0.75,
+    "display": "🐁",
     "diet": {
       "CATERPILLAR": 90,
       "GRASS": 100,
@@ -128,6 +137,7 @@
     "maxSpeed": 3,
     "saturation": 10.0,
     "maxAge": 15.0,
+    "display": "🐐",
     "diet": {
       "GRASS": 100,
       "FLOWER": 100
@@ -139,6 +149,7 @@
     "maxSpeed": 3,
     "saturation": 15.0,
     "maxAge": 12.0,
+    "display": "🐑",
     "diet": {
       "GRASS": 100,
       "FLOWER": 100
@@ -150,6 +161,7 @@
     "maxSpeed": 2,
     "saturation": 50.0,
     "maxAge": 15.0,
+    "display": "🐗",
     "diet": {
       "MOUSE": 50,
       "CATERPILLAR": 90,
@@ -164,6 +176,7 @@
     "maxSpeed": 3,
     "saturation": 100.0,
     "maxAge": 20.0,
+    "display": "🐃",
     "diet": {
       "GRASS": 100,
       "FLOWER": 100
@@ -175,6 +188,7 @@
     "maxSpeed": 4,
     "saturation": 0.15,
     "maxAge": 10.0,
+    "display": "🦆",
     "diet": {
       "CATERPILLAR": 90,
       "GRASS": 100
@@ -186,6 +200,7 @@
     "maxSpeed": 0,
     "saturation": 0.0,
     "maxAge": 0.08,
+    "display": "🐛",
     "diet": {
       "GRASS": 100,
       "FLOWER": 100,
@@ -197,20 +212,23 @@
     "maxCellAmount": 100,
     "maxSpeed": -1,
     "saturation": 0.2,
-    "maxAge": 0.33
+    "maxAge": 0.33,
+    "display": "🌿"
   },
   "FLOWER": {
     "weight": 3.0,
     "maxCellAmount": 60,
     "maxSpeed": -1,
     "saturation": 0.15,
-    "maxAge": 0.5
+    "maxAge": 0.5,
+    "display": "🌸"
   },
   "MUSHROOM": {
     "weight": 5.0,
     "maxCellAmount": 40,
     "maxSpeed": -1,
     "saturation": 0.01,
-    "maxAge": 0.25
+    "maxAge": 0.25,
+    "display": "🍄"
   }
 }

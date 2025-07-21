@@ -1,4 +1,4 @@
-package controller;
+package model.factory;
 
 import exceptions.LifeFormCreatingException;
 import lombok.AccessLevel;

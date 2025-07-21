@@ -1,6 +1,7 @@
 package model.animals.herbivore;
 
 import model.Consumable;
+import model.Living;
 import model.main.Cell;
 import model.animals.Animal;
 import model.plants.Plant;
@@ -21,7 +22,7 @@ public abstract class Herbivore extends Animal
     @Override
     protected Consumable findFood()
     {
-
-        return null;
+        //Т.к. Plant реализует Consumable
+        return (Consumable) currentCell.getRandomLiving(foodTypes);
     }
 }

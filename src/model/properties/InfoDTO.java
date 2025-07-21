@@ -15,5 +15,6 @@ public class InfoDTO
     private int maxSpeed;
     private double maxSaturation;
     private double maxAge;
+    private char display;
     private Map<Encyclopedia, Integer> diet;
 }

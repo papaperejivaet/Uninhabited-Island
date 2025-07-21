@@ -9,8 +9,6 @@ import model.properties.Encyclopedia;
 import model.properties.GeneralConstants;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReentrantLock;
 
 @EqualsAndHashCode
@@ -32,6 +30,8 @@ public class Cell
             {0, -1},           {0, 1},
             {1, -1},  {1, 0},  {1, 1}
     };
+
+    private final char[][] biggestAmount = new char[2][2];
 
     public Cell(int x, int y)
     {
@@ -60,6 +60,11 @@ public class Cell
         return biota.getAllLivingBeingTypes();
     }
 
+    public Living getRandomLiving(List<Encyclopedia> typeList)
+    {
+        return biota.getRandomLiving(typeList);
+    }
+
     private List<Cell> findNeighboringCells()
     {
         List<Cell> neighbors = new ArrayList<>();
@@ -82,12 +87,6 @@ public class Cell
         }
     }
 
-
-    public Living getRandomLiving(Class<? extends Living> type)
-    {
-
-
-    }
 
 
 
