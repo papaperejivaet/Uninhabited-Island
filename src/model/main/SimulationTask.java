@@ -1,8 +1,8 @@
 package model.main;
 
 import lombok.AllArgsConstructor;
-import model.animals.utility.Animal;
-import model.animals.utility.Living;
+import model.animals.Animal;
+import model.Living;
 import model.properties.Encyclopedia;
 
 import java.util.List;
@@ -33,6 +33,7 @@ public class SimulationTask implements Runnable
             {
                 animal.move();
             }
+            livingBeing.consume();
 
 
         }

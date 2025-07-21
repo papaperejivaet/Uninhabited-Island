@@ -1,4 +1,4 @@
-package model.animals.utility;
+package model;
 
 import model.properties.DeathCause;
 
@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public interface Living
 {
-    boolean consume (Consumable food, ThreadLocalRandom random);
+    boolean consume ();
 
     void reproduce(Living livingBeing);
 

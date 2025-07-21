@@ -1,4 +1,4 @@
-package model.animals.utility;
+package model;
 
 public interface Consumable
 {

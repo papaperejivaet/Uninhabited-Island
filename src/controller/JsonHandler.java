@@ -6,13 +6,13 @@ import exceptions.JsonMapConvertingException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import model.properties.Encyclopedia;
-import model.properties.LifeFormInfo;
+import model.properties.InfoDTO;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.stream.Collectors;
+
 
 /**
  * Утильный класс для чтения и преобразования JSON-файлов в типизированные {@code Map},
@@ -91,64 +91,10 @@ public class JsonHandler
         }
     }
 
-    /**
-     * Загружает JSON-файл с вложенной структурой {@code Map<String, Map<String, T>>} и преобразовывает его в
-     * {@code Map<Encyclopedia, Map<Encyclopedia, T>>}.
-     * <p>
-     * Параметр {@code valueClass} передаётся для совместимости с сигнатурой,
-     * но не используется напрямую, так как используется {@link TypeReference}.
-     * <p>
-     * Метод полезен, например, для представления вероятностей взаимодействия между видами (например, шанс съедения).
-     *
-     * @param path       путь к JSON-файлу
-     * @param valueClass класс значений, хранящихся во внутренней мапе
-     * @param <T>        тип значений
-     * @return {@code Map<Encyclopedia, Map<Encyclopedia, T>>} — десериализованные и приведённые ключи
-     */
-    @SuppressWarnings("unused")
-    public static <T> Map<Encyclopedia, Map<Encyclopedia, T>> parseCodependentData(String path, Class<T> valueClass)
-    {
-        // Загружаем JSON-файл вида Map<String, Map<String, T>>
-        // и сразу преобразуем внешние ключи в Encyclopedia
-        Map<Encyclopedia, Map<String, T>> rawData = parseData(path,
-                new TypeReference<>()
-                {
-                });
-
-        // Преобразование внутренних ключей (строк) в Encyclopedia
-        return rawData.entrySet().stream()
-                .collect(Collectors.toMap(
-                        // 1-й аргумент (поедающий): внешний ключ типа Encyclopedia
-                        Map.Entry::getKey,
-
-                        // 2-й аргумент (поедающий): внешнее значение. Преобразование вложенной Map<String, T> в Map<Encyclopedia, T>
-                        predatorEntry -> predatorEntry.getValue().entrySet().stream()
-                                .collect(Collectors.toMap(
-
-                                        // 1-й аргумент (жертва): внутренний ключ. Преобразование String в Encyclopedia
-                                        preyEntry -> Encyclopedia.getLivingBeing(preyEntry.getKey()),
-
-                                        // 2-й аргумент (жертва): внутреннее значение
-                                        Map.Entry::getValue,
-
-                                        // 3-й аргумент (жертва): функция слияния значений при совпадении ключей
-                                        (a, b) -> b,
-
-                                        // 4-й аргумент (жертва): EnumMap как итоговая структура
-                                        () -> new EnumMap<>(Encyclopedia.class)
-                                )),
-
-                        // 3-й аргумент (поедающий): функция слияния значений при совпадении ключей (просто берём второй)
-                        (a, b) -> b,
-
-                        // 4-й аргумент (поедающий): EnumMap как итоговая структура
-                        () -> new EnumMap<>(Encyclopedia.class)
-                ));
-    }
 
     /**
      * Загружает и десериализует информацию о живых существах из JSON-файла,
-     * возвращая отображение {@link Encyclopedia} → {@link LifeFormInfo}.
+     * возвращая отображение {@link Encyclopedia} → {@link InfoDTO}.
      * <p>
      * Ожидаемый формат JSON:
      * <pre>{@code
@@ -159,6 +105,11 @@ public class JsonHandler
      *     "maxSpeed": 3,
      *     "saturation": 8.0,
      *     "maxAge": 6.0
+     *     "diet": {
+     *       "HORSE": 10,
+     *       "DEER": 15,
+     *       "RABBIT": 60
+     *       }
      *   },
      *   ...
      * }
@@ -174,7 +125,7 @@ public class JsonHandler
      * @see JsonHandler#parseData(String, TypeReference)
      */
 
-    public static Map<Encyclopedia, LifeFormInfo> parseLifeFormInfo(String path) {
+    public static Map<Encyclopedia, InfoDTO> parseLifeFormInfo(String path) {
         return parseData(path, new TypeReference<>() {});
     }
 

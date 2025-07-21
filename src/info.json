@@ -1,0 +1,216 @@
+{
+  "WOLF": {
+    "weight": 50.0,
+    "maxCellAmount": 30,
+    "maxSpeed": 3,
+    "saturation": 8.0,
+    "maxAge": 6.0,
+    "diet": {
+      "HORSE": 10,
+      "DEER": 15,
+      "RABBIT": 60,
+      "MOUSE": 80,
+      "GOAT": 60,
+      "SHEEP": 70,
+      "HOG": 15,
+      "BUFFALO": 10,
+      "DUCK": 40
+    }
+  },
+  "SNAKE": {
+    "weight": 15.0,
+    "maxCellAmount": 30,
+    "maxSpeed": 1,
+    "saturation": 3.0,
+    "maxAge": 20.0,
+    "diet": {
+      "FOX": 15,
+      "RABBIT": 20,
+      "MOUSE": 40,
+      "DUCK": 10
+    }
+  },
+  "FOX": {
+    "weight": 8.0,
+    "maxCellAmount": 30,
+    "maxSpeed": 2,
+    "saturation": 2.0,
+    "maxAge": 5.0,
+    "diet": {
+      "RABBIT": 70,
+      "MOUSE": 90,
+      "DUCK": 60,
+      "CATERPILLAR": 40
+    }
+  },
+  "BEAR": {
+    "weight": 500.0,
+    "maxCellAmount": 5,
+    "maxSpeed": 2,
+    "saturation": 80.0,
+    "maxAge": 20.0,
+    "diet": {
+      "SNAKE": 80,
+      "HORSE": 40,
+      "DEER": 80,
+      "RABBIT": 80,
+      "MOUSE": 90,
+      "GOAT": 70,
+      "SHEEP": 70,
+      "HOG": 50,
+      "BUFFALO": 20,
+      "DUCK": 10
+    }
+  },
+  "EAGLE": {
+    "weight": 6.0,
+    "maxCellAmount": 20,
+    "maxSpeed": 3,
+    "saturation": 1.0,
+    "maxAge": 20.0,
+    "diet": {
+      "FOX": 10,
+      "RABBIT": 90,
+      "MOUSE": 90,
+      "DUCK": 80
+    }
+  },
+  "HORSE": {
+    "weight": 400.0,
+    "maxCellAmount": 20,
+    "maxSpeed": 4,
+    "saturation": 60.0,
+    "maxAge": 25.0,
+    "diet": {
+      "GRASS": 100,
+      "FLOWER": 100
+    }
+  },
+  "DEER": {
+    "weight": 300.0,
+    "maxCellAmount": 20,
+    "maxSpeed": 4,
+    "saturation": 50.0,
+    "maxAge": 15.0,
+    "diet": {
+      "GRASS": 100,
+      "FLOWER": 100,
+      "MUSHROOM": 100
+    }
+  },
+  "RABBIT": {
+    "weight": 2.0,
+    "maxCellAmount": 150,
+    "maxSpeed": 2,
+    "saturation": 0.45,
+    "maxAge": 1.5,
+    "diet": {
+      "GRASS": 100,
+      "FLOWER": 100
+    }
+  },
+  "MOUSE": {
+    "weight": 0.05,
+    "maxCellAmount": 500,
+    "maxSpeed": 1,
+    "saturation": 0.01,
+    "maxAge": 0.75,
+    "diet": {
+      "CATERPILLAR": 90,
+      "GRASS": 100,
+      "FLOWER": 100,
+      "MUSHROOM": 100
+    }
+  },
+  "GOAT": {
+    "weight": 60.0,
+    "maxCellAmount": 140,
+    "maxSpeed": 3,
+    "saturation": 10.0,
+    "maxAge": 15.0,
+    "diet": {
+      "GRASS": 100,
+      "FLOWER": 100
+    }
+  },
+  "SHEEP": {
+    "weight": 70.0,
+    "maxCellAmount": 140,
+    "maxSpeed": 3,
+    "saturation": 15.0,
+    "maxAge": 12.0,
+    "diet": {
+      "GRASS": 100,
+      "FLOWER": 100
+    }
+  },
+  "HOG": {
+    "weight": 400.0,
+    "maxCellAmount": 50,
+    "maxSpeed": 2,
+    "saturation": 50.0,
+    "maxAge": 15.0,
+    "diet": {
+      "MOUSE": 50,
+      "CATERPILLAR": 90,
+      "GRASS": 100,
+      "FLOWER": 100,
+      "MUSHROOM": 100
+    }
+  },
+  "BUFFALO": {
+    "weight": 700.0,
+    "maxCellAmount": 10,
+    "maxSpeed": 3,
+    "saturation": 100.0,
+    "maxAge": 20.0,
+    "diet": {
+      "GRASS": 100,
+      "FLOWER": 100
+    }
+  },
+  "DUCK": {
+    "weight": 1.0,
+    "maxCellAmount": 200,
+    "maxSpeed": 4,
+    "saturation": 0.15,
+    "maxAge": 10.0,
+    "diet": {
+      "CATERPILLAR": 90,
+      "GRASS": 100
+    }
+  },
+  "CATERPILLAR": {
+    "weight": 0.01,
+    "maxCellAmount": 1000,
+    "maxSpeed": 0,
+    "saturation": 0.0,
+    "maxAge": 0.08,
+    "diet": {
+      "GRASS": 100,
+      "FLOWER": 100,
+      "MUSHROOM": 100
+    }
+  },
+  "GRASS": {
+    "weight": 1.0,
+    "maxCellAmount": 100,
+    "maxSpeed": -1,
+    "saturation": 0.2,
+    "maxAge": 0.33
+  },
+  "FLOWER": {
+    "weight": 3.0,
+    "maxCellAmount": 60,
+    "maxSpeed": -1,
+    "saturation": 0.15,
+    "maxAge": 0.5
+  },
+  "MUSHROOM": {
+    "weight": 5.0,
+    "maxCellAmount": 40,
+    "maxSpeed": -1,
+    "saturation": 0.01,
+    "maxAge": 0.25
+  }
+}
