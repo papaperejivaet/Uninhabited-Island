@@ -5,8 +5,7 @@ import exceptions.NoSuchAnimalException;
 import lombok.Getter;
 import model.animals.carnivore.*;
 import model.animals.herbivore.*;
-import model.animals.utility.Animal;
-import model.animals.utility.Living;
+import model.Living;
 import model.plants.*;
 
 import java.util.ArrayList;

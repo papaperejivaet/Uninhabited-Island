@@ -1,11 +1,12 @@
-package model.animals.utility;
+package model;
 
 import lombok.EqualsAndHashCode;
+import model.animals.Animal;
 import model.main.Cell;
 import model.properties.DeathCause;
 import model.properties.Encyclopedia;
 import model.properties.GeneralConstants;
-import model.properties.LifeFormRegistry;
+import model.properties.Registry;
 
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -18,20 +19,20 @@ public abstract class LifeForm implements Living, Consumable
 
     protected Encyclopedia livingBeingType = Encyclopedia.getLivingBeing(this.getClass());
 
-    double age;
-    double saturationLevel;
-    double maxAge = LifeFormRegistry.getMaxAge(livingBeingType);
-    double maxSaturationLevel = LifeFormRegistry.getMaxSaturationLevel(livingBeingType);
-    int maxSpeed = LifeFormRegistry.getMaxSpeed(livingBeingType);
+    protected double age;
+    protected double saturationLevel;
+    protected double maxAge = Registry.getMaxAge(livingBeingType);
+    protected double maxSaturationLevel = Registry.getMaxSaturationLevel(livingBeingType);
+    protected int maxSpeed = Registry.getMaxSpeed(livingBeingType);
 
-    boolean hasBred; // Размножалось ли данное существо в этом цикле?
-    boolean hasConsumed;
-    boolean isDead;
+    protected boolean hasBred; // Размножалось ли данное существо в этом цикле?
+    protected boolean hasConsumed;
+    protected boolean isDead;
 
     protected Map<Encyclopedia, Integer> currentPosition;
-    int x;
-    int y;
-    Cell currentCell;
+    protected int x;
+    protected int y;
+    protected Cell currentCell;
 
 
     protected LifeForm(Cell cell, double age, double saturationLevel)
@@ -60,7 +61,7 @@ public abstract class LifeForm implements Living, Consumable
             return 0.0;
         }
         die(DeathCause.EATEN);
-        return LifeFormRegistry.getWeight(livingBeingType);
+        return Registry.getWeight(livingBeingType);
     }
 
     @Override
@@ -76,8 +77,10 @@ public abstract class LifeForm implements Living, Consumable
     }
 
     @Override
-    public boolean consume(Consumable food, ThreadLocalRandom random)
+    public boolean consume()
     {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        Consumable food = findFood();
         if (saturationLevel == maxSaturationLevel || isDead)
         {
             return false;
@@ -90,6 +93,8 @@ public abstract class LifeForm implements Living, Consumable
 
         return false;
     }
+
+    protected abstract Consumable findFood();
 
     @Override
     public boolean increaseSaturationLevel(Consumable food)
@@ -114,7 +119,7 @@ public abstract class LifeForm implements Living, Consumable
             return;
         }
 
-        if (age == LifeFormRegistry.getMaxAge(livingBeingType))
+        if (age == Registry.getMaxAge(livingBeingType))
         {
             die(DeathCause.NATURAL);
         }
@@ -128,7 +133,7 @@ public abstract class LifeForm implements Living, Consumable
         if (food instanceof Animal animal)
         {
             Encyclopedia prey = Encyclopedia.getLivingBeing(animal.getClass());
-            return LifeFormRegistry.getEatingChances(livingBeingType, prey);
+            return Registry.getEatingChances(livingBeingType, prey);
         }
         else
         {

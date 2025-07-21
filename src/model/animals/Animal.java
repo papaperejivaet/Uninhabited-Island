@@ -1,10 +1,12 @@
-package model.animals.utility;
+package model.animals;
 
 
 import lombok.Getter;
+import model.LifeForm;
+import model.Mobile;
 import model.main.Cell;
 import model.properties.DeathCause;
-import model.properties.LifeFormRegistry;
+import model.properties.Registry;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -42,6 +44,22 @@ public abstract class Animal extends LifeForm implements Mobile
         hasMoved = true;
     }
 
+    @Override
+    public void die(DeathCause cause)
+    {
+        super.die(cause);
+        Registry.registerDeath(livingBeingType, cause);
+    }
+
+    @Override
+    public void grow()
+    {
+        super.grow();
+        hasMoved = false;
+        hasConsumed = false;
+    }
+
+
     private Cell getNewCell()
     {
         ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -58,21 +76,6 @@ public abstract class Animal extends LifeForm implements Mobile
         }
 
         return newCell;
-    }
-
-    @Override
-    public void die(DeathCause cause)
-    {
-        super.die(cause);
-        LifeFormRegistry.registerDeath(livingBeingType, cause);
-    }
-
-    @Override
-    public void grow()
-    {
-        super.grow();
-        hasMoved = false;
-        hasConsumed = false;
     }
 
 

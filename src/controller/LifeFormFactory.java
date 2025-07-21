@@ -4,9 +4,9 @@ import exceptions.LifeFormCreatingException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import model.main.Cell;
-import model.animals.utility.Living;
+import model.Living;
 import model.properties.Encyclopedia;
-import model.properties.LifeFormRegistry;
+import model.properties.Registry;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -77,6 +77,6 @@ public class LifeFormFactory
     {
         Encyclopedia livingBeing = Encyclopedia.getLivingBeing(mom.getClass());
         mom.reproduce(dad);
-        return create(livingBeing, cell, 0.0, LifeFormRegistry.getMaxSaturationLevel(livingBeing));
+        return create(livingBeing, cell, 0.0, Registry.getMaxSaturationLevel(livingBeing));
     }
 }

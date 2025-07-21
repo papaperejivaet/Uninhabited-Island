@@ -3,7 +3,7 @@ package model.main;
 import controller.LifeFormFactory;
 import model.properties.Encyclopedia;
 import model.properties.GeneralConstants;
-import model.properties.LifeFormRegistry;
+import model.properties.Registry;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -18,9 +18,9 @@ public class PopulationTask implements Runnable
 
     Encyclopedia livingBeing = Encyclopedia.values()[livingNumber];
     ThreadLocalRandom random = ThreadLocalRandom.current();
-    int startAmount = LifeFormRegistry.getStartAmount(livingBeing);
-    double maxAge = LifeFormRegistry.getMaxAge(livingBeing);
-    double maxSaturation = LifeFormRegistry.getMaxSaturationLevel(livingBeing);
+    int startAmount = Registry.getStartAmount(livingBeing);
+    double maxAge = Registry.getMaxAge(livingBeing);
+    double maxSaturation = Registry.getMaxSaturationLevel(livingBeing);
 
     @Override
     public void run()

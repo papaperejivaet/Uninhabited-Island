@@ -1,9 +1,9 @@
 package model.plants;
 
 import model.main.Cell;
-import model.animals.utility.Consumable;
-import model.animals.utility.LifeForm;
-import model.animals.utility.Sun;
+import model.Consumable;
+import model.LifeForm;
+import model.Sun;
 import java.util.concurrent.ThreadLocalRandom;
 
 
@@ -16,16 +16,10 @@ public class Plant extends LifeForm
         super(cell, age, saturationLevel);
     }
 
-    @Override
-    public boolean consume(Consumable food, ThreadLocalRandom random)
-    {
-        lock.lock();
 
-        if (food instanceof Sun sun)
-        {
-            return increaseSaturationLevel(sun);
-        }
-        lock.unlock();
-        return false;
+    @Override
+    protected Consumable findFood()
+    {
+        return Sun.getInstance();
     }
 }

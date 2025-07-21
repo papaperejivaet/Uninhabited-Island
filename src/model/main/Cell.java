@@ -4,106 +4,94 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import model.animals.utility.Living;
+import model.Living;
 import model.properties.Encyclopedia;
 import model.properties.GeneralConstants;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReentrantLock;
 
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class Cell
 {
-    private final Map<Encyclopedia, List<Living>> biota = new ConcurrentHashMap<>();
+    CellBiota biota = new CellBiota();
 
     private final ReentrantLock lock = new ReentrantLock();
+    @Getter
+    private final List<Cell> neighboringCells;
+
     @Getter
     private final int x;
     @Getter
     private final int y;
 
-    private final static int[][] directions = {
+    private static final int[][] directions = {
             {-1, -1}, {-1, 0}, {-1, 1},
             {0, -1},           {0, 1},
             {1, -1},  {1, 0},  {1, 1}
     };
 
+    public Cell(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+        neighboringCells = Collections.unmodifiableList(findNeighboringCells());
+    }
 
     public void addLivingBeing(Living living)
     {
-        lock.lock();
-
-        Encyclopedia livingBeing = Encyclopedia.getLivingBeing(living.getClass());
-        biota.computeIfAbsent(livingBeing, _ -> new ArrayList<>());
-        putInMap(living, biota);
-
-        lock.unlock();
+        biota.addLivingBeing(living);
     }
 
     public void removeLivingBeing(Living living)
     {
-        lock.lock();
-
-        removeFromMap(living, biota);
-
-        lock.unlock();
-    }
-
-    public boolean isEmpty()
-    {
-        return biota.isEmpty();
+        biota.removeLivingBeing(living);
     }
 
     public List<Living> getLivingBeings(Encyclopedia livingBeing)
     {
-        if (biota.get(livingBeing).isEmpty())
-        {
-            return null;
-        }
-        return new ArrayList<>(biota.get(livingBeing));
+        return biota.getLivingBeings(livingBeing);
     }
 
     public Set<Encyclopedia> getAllLivingBeingTypes()
     {
-        return biota.keySet();
+        return biota.getAllLivingBeingTypes();
     }
 
-    public List<Cell> getNeighboringCells()
+    private List<Cell> findNeighboringCells()
     {
-        lock.lock();
         List<Cell> neighbors = new ArrayList<>();
         for (int[] direction : directions)
         {
             int newY = y + direction[0];
             int newX = x + direction[1];
-
-            if (newY >= 0 && newY < GeneralConstants.HEIGHT &&
-                    newX >= 0 && newX < GeneralConstants.LENGTH)
-            {
-                neighbors.add(Island.getCell(newX, newY));
-            }
+            checkAndAddNeighbors(neighbors, newX, newY);
         }
-        lock.unlock();
         return neighbors;
     }
 
 
-    private void putInMap(Living living, Map<Encyclopedia, List<Living>> map)
+    private void checkAndAddNeighbors(List<Cell> neighbors, int x, int y)
     {
-        List<? super Living> livings = map.get(Encyclopedia.getLivingBeing(living.getClass()));
-        livings.add(living);
+        if (y >= 0 && y < GeneralConstants.HEIGHT &&
+                x >= 0 && x < GeneralConstants.LENGTH)
+        {
+            neighbors.add(Island.getCell(x, y));
+        }
     }
 
-    private void removeFromMap(Living living, Map<Encyclopedia, List<Living>> map)
+
+    public Living getRandomLiving(Class<? extends Living> type)
     {
-        List<Living> livings = map.get(Encyclopedia.getLivingBeing(living.getClass()));
-        livings.remove(living);
+
+
     }
+
+
+
+
 
 
 }
