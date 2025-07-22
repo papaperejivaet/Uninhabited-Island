@@ -3,15 +3,13 @@ package model.properties;
 
 import exceptions.NoSuchAnimalException;
 import lombok.Getter;
+import model.animals.Animal;
 import model.animals.carnivore.*;
 import model.animals.herbivore.*;
 import model.Living;
 import model.plants.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public enum Encyclopedia
 {
@@ -39,6 +37,8 @@ public enum Encyclopedia
     FLOWER("Цветок", Flower.class),
     MUSHROOM("Гриб", Mushroom.class);
 
+
+
     private final String translation;
     @Getter
     private final Class<? extends Living> type;
@@ -65,6 +65,8 @@ public enum Encyclopedia
 
     private static final Map<String, Encyclopedia> names;
     private static final Map<Class<? extends Living>, Encyclopedia> classes;
+
+
 
     static
     {
@@ -99,17 +101,18 @@ public enum Encyclopedia
         return livingBeing;
     }
 
-    public static List<Encyclopedia> getByType(Class<? extends Living> type)
+    static Set<Encyclopedia> getByType(LivingBeingType lbType)
     {
-        List<Encyclopedia> list = new ArrayList<>();
+        Class<? extends Living> type = lbType.getType();
+        Set<Encyclopedia> set = new HashSet<>();
         for (Map.Entry<Class<? extends Living>, Encyclopedia> entry : classes.entrySet())
         {
             if (entry.getKey().getSuperclass() == type)
             {
-                list.add(entry.getValue());
+                set.add(entry.getValue());
             }
         }
-        return list;
+        return set;
     }
 
 }

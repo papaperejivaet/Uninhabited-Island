@@ -1,4 +1,4 @@
-package model.main;
+package view;
 
 public class Drawer
 {

@@ -25,6 +25,10 @@ public class Cell
     @Getter
     private final int y;
 
+    private boolean containsCarnivores;
+    private boolean containsHerbivores;
+    private boolean containsPlants;
+
     private static final int[][] directions = {
             {-1, -1}, {-1, 0}, {-1, 1},
             {0, -1},           {0, 1},
@@ -60,9 +64,14 @@ public class Cell
         return biota.getAllLivingBeingTypes();
     }
 
-    public Living getRandomLiving(List<Encyclopedia> typeList)
+    public Living getRandomLiving(Set<Encyclopedia> typeList)
     {
         return biota.getRandomLiving(typeList);
+    }
+
+    public boolean containsAny(Set<Encyclopedia> typeSet)
+    {
+        return biota.containsAny(typeSet);
     }
 
     private List<Cell> findNeighboringCells()

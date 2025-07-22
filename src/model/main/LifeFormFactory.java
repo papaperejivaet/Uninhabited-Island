@@ -1,9 +1,8 @@
-package model.factory;
+package model.main;
 
 import exceptions.LifeFormCreatingException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import model.main.Cell;
 import model.Living;
 import model.properties.Encyclopedia;
 import model.properties.Registry;
@@ -34,7 +33,7 @@ public class LifeFormFactory
 
     private static final Map<Encyclopedia, MethodHandle> constructorCache = new ConcurrentHashMap<>();
 
-    public static Living create(Encyclopedia livingBeing, Cell cell, double age, double saturationLevel)
+    public static Living create(Encyclopedia livingBeing, int x, int y, double age, double saturationLevel)
     {
         try
         {
@@ -60,7 +59,7 @@ public class LifeFormFactory
                 }
 
             });
-
+            Cell cell = Island.getCell(x, y);
             Living createdLivingBeing = (Living) constructorHandle.invoke(cell, age, saturationLevel);
             cell.addLivingBeing(createdLivingBeing);
 
@@ -73,10 +72,8 @@ public class LifeFormFactory
     }
 
 
-    public static Living createNewborn(Living mom, Living dad, Cell cell)
+    public static Living createNewborn(Encyclopedia livingBeing, int x, int y)
     {
-        Encyclopedia livingBeing = Encyclopedia.getLivingBeing(mom.getClass());
-        mom.reproduce(dad);
-        return create(livingBeing, cell, 0.0, Registry.getMaxSaturationLevel(livingBeing));
+        return create(livingBeing, x, y, 0.0, Registry.getMaxSaturationLevel(livingBeing));
     }
 }

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 
-@Getter
+
 public abstract class Animal extends LifeForm implements Mobile
 {
     boolean hasMoved;
@@ -89,5 +89,10 @@ public abstract class Animal extends LifeForm implements Mobile
             Statistics.registerConsumption(livingBeingType);
         }
         return hasConsumed;
+    }
+
+    public boolean hasMoved()
+    {
+        return hasMoved;
     }
 }

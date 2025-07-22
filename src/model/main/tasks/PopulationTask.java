@@ -1,6 +1,6 @@
-package model.main;
+package model.main.tasks;
 
-import model.factory.LifeFormFactory;
+import model.main.LifeFormFactory;
 import model.properties.Encyclopedia;
 import model.properties.GeneralConstants;
 import model.properties.Registry;
@@ -38,7 +38,7 @@ public class PopulationTask implements Runnable
             age = getRandomDouble(maxAge);
             saturation = getRandomDouble(maxSaturation);
 
-            LifeFormFactory.create(livingBeing, Island.getCell(x,y), age, saturation);
+            LifeFormFactory.create(livingBeing, x, y, age, saturation);
         }
     }
 

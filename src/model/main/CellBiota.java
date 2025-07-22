@@ -18,7 +18,7 @@ class CellBiota
 
     private final ReentrantLock lock = new ReentrantLock();
 
-    public void addLivingBeing(Living living)
+    void addLivingBeing(Living living)
     {
 
         Encyclopedia livingBeing = Encyclopedia.getLivingBeing(living.getClass());
@@ -37,7 +37,7 @@ class CellBiota
         livings.add(living);
     }
 
-    protected void removeLivingBeing(Living living)
+    void removeLivingBeing(Living living)
     {
         lock.lock();
 
@@ -48,11 +48,16 @@ class CellBiota
 
     private void removeFromMap(Living living, Map<Encyclopedia, List<Living>> map)
     {
-        List<Living> livings = map.get(Encyclopedia.getLivingBeing(living.getClass()));
+        Encyclopedia livingBeingType = Encyclopedia.getLivingBeing(living.getClass());
+        List<Living> livings = map.get(livingBeingType);
         livings.remove(living);
+        if (livings.isEmpty())
+        {
+            map.remove(livingBeingType);
+        }
     }
 
-    protected List<Living> getLivingBeings(Encyclopedia livingBeing)
+    List<Living> getLivingBeings(Encyclopedia livingBeing)
     {
         lock.lock();
 
@@ -67,17 +72,18 @@ class CellBiota
         return livings;
     }
 
-    protected Set<Encyclopedia> getAllLivingBeingTypes()
+    Set<Encyclopedia> getAllLivingBeingTypes()
     {
         return biota.keySet();
     }
 
     //Список Encyclopedia, из которых выбирать
-    protected Living getRandomLiving(List<Encyclopedia> typeList)
+    Living getRandomLiving(Set<Encyclopedia> typeSet)
     {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int typeNumber;
         Encyclopedia currentType;
+        List<Encyclopedia> typeList = new ArrayList<>(typeSet);
         List<Living> livings;
 
         do
@@ -103,6 +109,7 @@ class CellBiota
         return Registry.getDisplay(type);
     }
 
+    //Для Drawer
     char getMaxAmountOfType(Class<? extends Living> type)
     {
         Optional<Map.Entry<Encyclopedia, List<Living>>> maxOptional = biota.entrySet().stream()
@@ -116,6 +123,20 @@ class CellBiota
         }
 
         return '?';
-
     }
+
+    boolean containsAny(Set<Encyclopedia> typeSet)
+    {
+        for (Encyclopedia type : typeSet)
+        {
+            if (biota.containsKey(type))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
 }

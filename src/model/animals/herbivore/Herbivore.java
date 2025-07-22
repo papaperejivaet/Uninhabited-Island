@@ -1,18 +1,17 @@
 package model.animals.herbivore;
 
 import model.Consumable;
-import model.Living;
 import model.main.Cell;
 import model.animals.Animal;
-import model.plants.Plant;
 import model.properties.Encyclopedia;
+import model.properties.LivingBeingType;
 
-import java.util.List;
+import java.util.Set;
 
 //Травоядное
 public abstract class Herbivore extends Animal
 {
-    protected static List<Encyclopedia> foodTypes = Encyclopedia.getByType(Plant.class);
+    protected static Set<Encyclopedia> foodTypes = LivingBeingType.PLANT.getMembers();
 
     protected Herbivore(Cell cell, double age, double saturationLevel)
     {

@@ -3,6 +3,7 @@ package model;
 import lombok.EqualsAndHashCode;
 import model.animals.Animal;
 import model.main.Cell;
+import model.main.LifeFormFactory;
 import model.main.Statistics;
 import model.properties.DeathCause;
 import model.properties.Encyclopedia;
@@ -48,7 +49,8 @@ public abstract class LifeForm implements Living, Consumable
     public void die(DeathCause cause)
     {
         isDead = true;
-        hasBred = false;
+        hasBred = true;
+        hasConsumed = true;
         currentCell.removeLivingBeing(this);
     }
 
@@ -64,7 +66,7 @@ public abstract class LifeForm implements Living, Consumable
     }
 
     @Override
-    public void reproduce(Living livingBeing)
+    public boolean reproduce(Living livingBeing)
     {
         if (livingBeing instanceof LifeForm lifeForm &&
                 !isDead && !lifeForm.isDead &&
@@ -72,12 +74,23 @@ public abstract class LifeForm implements Living, Consumable
         {
             hasBred = true;
             lifeForm.hasBred = true;
+            Living newborn = LifeFormFactory.createNewborn(livingBeingType, x, y);
+
+            if (newborn instanceof LifeForm born)
+            {
+                born.hasBred = true;
+            }
+
+            currentCell.addLivingBeing(newborn);
             if (lifeForm instanceof Animal)
             {
                 Statistics.registerBreeding(livingBeingType);
             }
         }
+        return hasBred;
     }
+
+
 
     @Override
     public boolean consume()
@@ -123,12 +136,18 @@ public abstract class LifeForm implements Living, Consumable
             return;
         }
 
+        hasBred = false;
+        saturationLevel -= (Registry.getMaxSaturationLevel(livingBeingType) / 100) * 5;
+        age += GeneralConstants.CYCLE_TIME * 0.01;
+
         if (age == Registry.getMaxAge(livingBeingType))
         {
             die(DeathCause.NATURAL);
         }
-            hasBred = false;
-            age += GeneralConstants.CYCLE_TIME * 0.01;
+        if (saturationLevel <= 0)
+        {
+            die(DeathCause.HUNGER);
+        }
 
     }
 

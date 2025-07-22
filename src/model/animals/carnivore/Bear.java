@@ -1,10 +1,13 @@
 package model.animals.carnivore;
 
+import model.main.Cell;
+
 public class Bear extends Carnivore
 {
 
-    public Bear(int age, long saturationLevel)
+
+    protected Bear(Cell cell, double age, double saturationLevel)
     {
-        super(age, saturationLevel);
+        super(cell, age, saturationLevel);
     }
 }

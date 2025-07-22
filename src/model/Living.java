@@ -8,7 +8,7 @@ public interface Living
 {
     boolean consume ();
 
-    void reproduce(Living livingBeing);
+    boolean reproduce(Living livingBeing);
 
     void die(DeathCause cause);
 
