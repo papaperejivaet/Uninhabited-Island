@@ -1,9 +1,12 @@
 package model.animals.herbivore;
 
+import model.main.Cell;
+
 public class Goat extends Herbivore
 {
-    public Goat(int age, long saturationLevel)
+
+    public Goat(Cell cell, double age, double saturationLevel)
     {
-        super(age, saturationLevel);
+        super(cell, age, saturationLevel);
     }
 }

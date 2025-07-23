@@ -1,9 +1,12 @@
 package model.animals.herbivore;
 
+import model.main.Cell;
+
 public class Caterpillar extends Herbivore
 {
-    public Caterpillar(int age, long saturationLevel)
+
+    public Caterpillar(Cell cell, double age, double saturationLevel)
     {
-        super(age, saturationLevel);
+        super(cell, age, saturationLevel);
     }
 }

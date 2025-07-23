@@ -3,7 +3,6 @@ package model.properties;
 
 import exceptions.NoSuchAnimalException;
 import lombok.Getter;
-import model.animals.Animal;
 import model.animals.carnivore.*;
 import model.animals.herbivore.*;
 import model.Living;

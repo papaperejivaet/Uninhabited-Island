@@ -1,9 +1,12 @@
 package model.animals.herbivore;
 
+import model.main.Cell;
+
 public class Deer extends Herbivore
 {
-    public Deer(int age, long saturationLevel)
+
+    public Deer(Cell cell, double age, double saturationLevel)
     {
-        super(age, saturationLevel);
+        super(cell, age, saturationLevel);
     }
 }

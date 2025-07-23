@@ -6,7 +6,7 @@ public class Bear extends Carnivore
 {
 
 
-    protected Bear(Cell cell, double age, double saturationLevel)
+    public Bear(Cell cell, double age, double saturationLevel)
     {
         super(cell, age, saturationLevel);
     }

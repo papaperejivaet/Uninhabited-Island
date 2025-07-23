@@ -1,7 +1,6 @@
 package model.animals;
 
 
-import lombok.Getter;
 import model.LifeForm;
 import model.Mobile;
 import model.main.Cell;

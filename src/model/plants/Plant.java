@@ -4,7 +4,7 @@ import model.main.Cell;
 import model.Consumable;
 import model.LifeForm;
 import model.Sun;
-import java.util.concurrent.ThreadLocalRandom;
+
 
 
 public class Plant extends LifeForm

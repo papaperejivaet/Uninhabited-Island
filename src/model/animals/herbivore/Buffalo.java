@@ -1,9 +1,12 @@
 package model.animals.herbivore;
 
+import model.main.Cell;
+
 public class Buffalo extends Herbivore
 {
-    public Buffalo(int age, long saturationLevel)
+
+    public Buffalo(Cell cell, double age, double saturationLevel)
     {
-        super(age, saturationLevel);
+        super(cell, age, saturationLevel);
     }
 }

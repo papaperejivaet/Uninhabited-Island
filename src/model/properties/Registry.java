@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Registry

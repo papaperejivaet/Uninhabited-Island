@@ -2,7 +2,6 @@ package model;
 
 import model.properties.DeathCause;
 
-import java.util.concurrent.ThreadLocalRandom;
 
 public interface Living
 {

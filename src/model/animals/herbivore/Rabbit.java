@@ -1,9 +1,12 @@
 package model.animals.herbivore;
 
+import model.main.Cell;
+
 public class Rabbit extends Herbivore
 {
-    public Rabbit(int age, long saturationLevel)
+
+    protected Rabbit(Cell cell, double age, double saturationLevel)
     {
-        super(age, saturationLevel);
+        super(cell, age, saturationLevel);
     }
 }

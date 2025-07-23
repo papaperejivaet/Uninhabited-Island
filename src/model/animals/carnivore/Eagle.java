@@ -1,10 +1,13 @@
 package model.animals.carnivore;
 
+import model.main.Cell;
+
 public class Eagle extends Carnivore
 {
 
-    public Eagle(int age, long saturationLevel)
+
+    public Eagle(Cell cell, double age, double saturationLevel)
     {
-        super(age, saturationLevel);
+        super(cell, age, saturationLevel);
     }
 }

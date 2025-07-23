@@ -1,9 +1,7 @@
 package model.main;
 
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import model.Living;
 import model.properties.Encyclopedia;
 import model.properties.GeneralConstants;

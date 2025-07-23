@@ -1,9 +1,12 @@
 package model.animals.carnivore;
 
+import model.main.Cell;
+
 public class Snake extends Carnivore
 {
-    public Snake(int age, long saturationLevel)
+
+    public Snake(Cell cell, double age, double saturationLevel)
     {
-        super(age, saturationLevel);
+        super(cell, age, saturationLevel);
     }
 }
