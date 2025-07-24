@@ -1,10 +1,12 @@
 package model.main;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import model.properties.DeathCause;
 import model.properties.Encyclopedia;
 import model.properties.LivingBeingType;
+import util.GeneralConstants;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,6 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Statistics
 {
+    private static int currentCycleNumber = 0;
+
     private static final Map<Encyclopedia, Integer> naturalDeaths = new ConcurrentHashMap<>();
     private static final Map<Encyclopedia, Integer> eatenDeaths = new ConcurrentHashMap<>();
     private static final Map<Encyclopedia, Integer> hungerDeaths = new ConcurrentHashMap<>();
@@ -25,6 +29,8 @@ public class Statistics
     private static final Map<Cell, Boolean> carnivoreContainment = new ConcurrentHashMap<>();
     private static final Map<Cell, Boolean> herbivoreContainment = new ConcurrentHashMap<>();
     private static final Map<Cell, Boolean> plantContainment = new ConcurrentHashMap<>();
+
+
 
 
 
@@ -85,6 +91,14 @@ public class Statistics
     protected static boolean checkConditions()
     {
         return animalContainment.containsValue(false) && carnivoreContainment.containsValue(false) &&
-                herbivoreContainment.containsValue(false) && plantContainment.containsValue(false);
+                herbivoreContainment.containsValue(false) && plantContainment.containsValue(false) &&
+                currentCycleNumber < GeneralConstants.MAX_CYCLES;
     }
+
+    protected static void nextCycle()
+    {
+        currentCycleNumber++;
+    }
+
+
 }

@@ -7,7 +7,7 @@ import model.main.LifeFormFactory;
 import model.main.Statistics;
 import model.properties.DeathCause;
 import model.properties.Encyclopedia;
-import model.properties.GeneralConstants;
+import util.GeneralConstants;
 import model.properties.Registry;
 
 import java.util.Map;

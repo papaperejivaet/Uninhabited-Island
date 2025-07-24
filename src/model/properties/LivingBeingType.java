@@ -18,8 +18,8 @@ public enum LivingBeingType
     HERBIVORE(Herbivore.class),
     PLANT(Plant.class);
 
-    @Getter(AccessLevel.PACKAGE)
-    Class<? extends Living> type;
+    @Getter
+    final Class<? extends Living> type;
 
     LivingBeingType(Class<? extends Living> type)
     {

@@ -92,6 +92,33 @@ public class JsonHandler
     }
 
 
+     public static <T> Map<Encyclopedia, T> parseDataCheck(String path, TypeReference<Map<String, T>> typeRef) {
+        try {
+            File file = new File(path);
+            if (!file.exists()) {
+                System.err.println("Файл не найден: " + file.getAbsolutePath());
+            }
+
+            Map<String, T> rawData = mapper.readValue(file, typeRef);
+            System.out.println("Успешно считан JSON: " + rawData.size() + " записей");
+
+            Map<Encyclopedia, T> result = new EnumMap<>(Encyclopedia.class);
+
+            for (Map.Entry<String, T> entry : rawData.entrySet()) {
+                String key = entry.getKey();
+                T value = entry.getValue();
+                Encyclopedia e = Encyclopedia.getLivingBeing(key);
+                result.put(e, value);
+            }
+
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace(); // ← увидим, что реально упало
+            throw new JsonMapConvertingException("Ошибка чтения JSON-файла: " + e.getMessage());
+        }
+    }
+
+
     /**
      * Загружает и десериализует информацию о живых существах из JSON-файла,
      * возвращая отображение {@link Encyclopedia} → {@link InfoDTO}.

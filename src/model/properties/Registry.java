@@ -1,6 +1,7 @@
 package model.properties;
 
 
+import util.GeneralConstants;
 import util.JsonHandler;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@ import java.util.*;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Registry
 {
-    private static final Map<Encyclopedia, InfoDTO> livingBeingInfo = JsonHandler.parseLifeFormInfo("info.json");
+    private static final Map<Encyclopedia, InfoDTO> livingBeingInfo = JsonHandler.parseLifeFormInfo("C:\\Users\\ndpee\\IdeaProjects\\Uninhabited Island\\src\\info.json");
 
 
 
@@ -48,11 +49,12 @@ public final class Registry
     public static Integer getEatingChances(Encyclopedia predator, Encyclopedia prey)
     {
         InfoDTO lifeFormInfo = livingBeingInfo.get(predator);
-        Map<Encyclopedia, Integer> diet = lifeFormInfo.getDiet();
-        return diet.get(prey);
+        Map<String, Integer> diet = lifeFormInfo.getDiet();
+
+        return diet.get(prey.toString());
     }
 
-    public static char getDisplay(Encyclopedia type)
+    public static String getDisplay(Encyclopedia type)
     {
         InfoDTO lifeFormInfo = livingBeingInfo.get(type);
         return lifeFormInfo.getDisplay();

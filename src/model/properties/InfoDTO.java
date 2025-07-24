@@ -1,5 +1,6 @@
 package model.properties;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,8 +14,9 @@ public class InfoDTO
     private double weight;
     private int maxCellAmount;
     private int maxSpeed;
+    @JsonAlias("saturation")
     private double maxSaturation;
     private double maxAge;
-    private char display;
-    private Map<Encyclopedia, Integer> diet;
+    private String display;
+    private Map<String, Integer> diet;
 }

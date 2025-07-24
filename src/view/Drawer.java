@@ -1,10 +1,17 @@
 package view;
 
-import model.properties.GeneralConstants;
+import util.GeneralConstants;
+
+import java.util.List;
+
 
 public class Drawer
 {
+    private static final int ROWS = GeneralConstants.LENGTH;
+    private static final int COLS = GeneralConstants.HEIGHT;
 
+    private static List<String> mostPopularAnimalChars;
+    private static List<String> mostPopularPlantChars;
 //
 //    public static void draw()
 //    {
@@ -14,9 +21,11 @@ public class Drawer
 //        System.out.println("╚═══════╝");
 //    }
 
-    private static void drawFirstQuarter()
+    public static void receiveMostPopularChars(List<String> mostPopularAnimalChars,
+                                               List<String> mostPopularPlantChars)
     {
-
+        Drawer.mostPopularAnimalChars = mostPopularAnimalChars;
+        Drawer.mostPopularPlantChars = mostPopularPlantChars;
     }
 
     public static void drawField() {
@@ -24,16 +33,15 @@ public class Drawer
 
         drawTopBorder(sb);
 
-        for (int row = 0; row < GeneralConstants.LENGTH; row++) {
-            drawCellContent(sb);
+        for (int row = 0; row < ROWS; row++) {
+            drawCellContent(sb, row);
 
-            if (row < GeneralConstants.LENGTH - 1) {
+            if (row < ROWS - 1) {
                 drawRowSeparator(sb);
             } else {
                 drawBottomBorder(sb);
             }
         }
-
         System.out.print(sb);
     }
 
@@ -43,15 +51,25 @@ public class Drawer
         sb.append("════╗\n");
     }
 
-    private static void drawCellContent(StringBuilder sb) {
-        for (int inner = 0; inner < 2; inner++) {
-            sb.append("║");
-            for (int col = 0; col < GeneralConstants.HEIGHT; col++) {
-                sb.append("    ");
-                sb.append("║");
-            }
-            sb.append("\n");
+    private static void drawCellContent(StringBuilder sb, int row) {
+        // Верхняя строка с животными
+        int index;
+        sb.append("║");
+        for (int col = 0; col < COLS; col++) {
+            index = row * COLS + col;
+            String animalChar = mostPopularAnimalChars.get(index);
+            sb.append(animalChar).append("  ").append("║");
         }
+        sb.append("\n");
+
+        // Нижняя строка с растениями
+        sb.append("║");
+        for (int col = 0; col < COLS; col++) {
+            index = row * COLS + col;
+            String plantChar = mostPopularPlantChars.get(index);
+            sb.append(plantChar).append("  ").append("║");
+        }
+        sb.append("\n");
     }
 
     private static void drawRowSeparator(StringBuilder sb) {
@@ -65,4 +83,6 @@ public class Drawer
         sb.append("════╩".repeat(Math.max(0, GeneralConstants.HEIGHT - 1)));
         sb.append("════╝\n");
     }
+
+
 }

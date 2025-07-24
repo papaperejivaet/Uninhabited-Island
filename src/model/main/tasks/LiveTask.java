@@ -22,19 +22,20 @@ public class LiveTask implements Runnable
     @Override
     public void run()
     {
+        phaser.register();
         for (Encyclopedia livingBeingType : cell.getAllLivingBeingTypes())
         {
             List<Living> livingBeings = cell.getLivingBeings(livingBeingType);
             live(livingBeings);
-            Statistics.confirmAvailability(cell);
         }
+        Statistics.confirmAvailability(cell);
+        phaser.arriveAndDeregister();
     }
 
     private void live(List<Living> livingBeings)
     {
         for (Living livingBeing : livingBeings)
         {
-            phaser.register();
             livingBeing.grow();
             livingBeing.consume();
             boolean isFound;
@@ -43,7 +44,7 @@ public class LiveTask implements Runnable
                 isFound = findCouple(livingBeings, livingBeing);
             }
             while (isFound);
-            phaser.arriveAndDeregister();
+
         }
     }
 

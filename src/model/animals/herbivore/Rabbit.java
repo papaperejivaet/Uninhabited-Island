@@ -5,7 +5,7 @@ import model.main.Cell;
 public class Rabbit extends Herbivore
 {
 
-    protected Rabbit(Cell cell, double age, double saturationLevel)
+    public Rabbit(Cell cell, double age, double saturationLevel)
     {
         super(cell, age, saturationLevel);
     }

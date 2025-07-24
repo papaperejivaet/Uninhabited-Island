@@ -4,28 +4,28 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import model.Living;
 import model.properties.Encyclopedia;
-import model.properties.GeneralConstants;
+import util.GeneralConstants;
+import model.properties.LivingBeingType;
 
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 @EqualsAndHashCode
-public class Cell
+public class Cell implements Comparable<Cell>
 {
     CellBiota biota = new CellBiota();
 
     private final ReentrantLock lock = new ReentrantLock();
     @Getter
-    private final List<Cell> neighboringCells;
+    private List<Cell> neighboringCells;
+
+    private boolean isFound = false;
 
     @Getter
     private final int x;
     @Getter
     private final int y;
 
-    private boolean containsCarnivores;
-    private boolean containsHerbivores;
-    private boolean containsPlants;
 
     private static final int[][] directions = {
             {-1, -1}, {-1, 0}, {-1, 1},
@@ -39,7 +39,6 @@ public class Cell
     {
         this.x = x;
         this.y = y;
-        neighboringCells = Collections.unmodifiableList(findNeighboringCells());
     }
 
     public void addLivingBeing(Living living)
@@ -72,8 +71,15 @@ public class Cell
         return biota.containsAny(typeSet);
     }
 
-    private List<Cell> findNeighboringCells()
+    public String getCharOfMaxAmount(LivingBeingType livingBeingType)
     {
+        return biota.getCharOfMaxAmount(livingBeingType);
+    }
+
+    public void findNeighboringCells()
+    {
+        if (isFound) return;
+
         List<Cell> neighbors = new ArrayList<>();
         for (int[] direction : directions)
         {
@@ -81,7 +87,8 @@ public class Cell
             int newX = x + direction[1];
             checkAndAddNeighbors(neighbors, newX, newY);
         }
-        return neighbors;
+        neighboringCells = Collections.unmodifiableList(neighbors);
+        isFound = true;
     }
 
 
@@ -95,9 +102,16 @@ public class Cell
     }
 
 
-
-
-
-
-
+    @Override
+    public int compareTo(Cell o)
+    {
+        if (this.y != o.y)
+        {
+            return Integer.compare(o.y, this.y);
+        }
+        else
+        {
+            return Integer.compare(o.x, this.x);
+        }
+    }
 }

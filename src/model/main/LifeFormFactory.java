@@ -62,11 +62,11 @@ public class LifeFormFactory
             Cell cell = Island.getCell(x, y);
             Living createdLivingBeing = (Living) constructorHandle.invoke(cell, age, saturationLevel);
             cell.addLivingBeing(createdLivingBeing);
-
             return createdLivingBeing;
         }
         catch (Throwable e) // invoke может выбросить Throwable
         {
+            e.printStackTrace();
             throw new LifeFormCreatingException("Ошибка при создании формы жизни: " + Arrays.toString(e.getStackTrace()));
         }
     }

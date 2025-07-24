@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import model.Living;
 import model.properties.Encyclopedia;
+import model.properties.LivingBeingType;
 import model.properties.Registry;
 
 import java.util.*;
@@ -98,7 +99,7 @@ class CellBiota
 
     }
 
-    char getMaxAmount()
+    String getMaxAmount()
     {
         Encyclopedia type = Collections.max(
                 biota.entrySet(),
@@ -110,10 +111,11 @@ class CellBiota
     }
 
     //Для Drawer
-    char getMaxAmountOfType(Class<? extends Living> type)
+    String getCharOfMaxAmount(LivingBeingType livingBeingType)
     {
+        Class<? extends Living> type = livingBeingType.getType();
         Optional<Map.Entry<Encyclopedia, List<Living>>> maxOptional = biota.entrySet().stream()
-                .filter(entry -> type.isInstance(entry.getKey().getType()))
+                .filter(entry -> type.isAssignableFrom(entry.getKey().getType()))
                 .max(Comparator.comparingInt(entry -> entry.getValue().size()));
 
         if (maxOptional.isPresent())
@@ -122,7 +124,7 @@ class CellBiota
             return Registry.getDisplay(maxType);
         }
 
-        return '?';
+        return "  ";
     }
 
     boolean containsAny(Set<Encyclopedia> typeSet)

@@ -1,36 +1,46 @@
 package model.main.tasks;
 
+import model.Living;
 import model.main.LifeFormFactory;
 import model.properties.Encyclopedia;
-import model.properties.GeneralConstants;
+import util.GeneralConstants;
 import model.properties.Registry;
 
+import java.util.concurrent.Phaser;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class PopulationTask implements Runnable
 {
-    private int livingNumber;
+    private final int livingNumber;
+    private final Phaser phaser;
 
-    public PopulationTask(int livingNumber)
+
+    public PopulationTask(int livingNumber, Phaser phaser)
     {
         this.livingNumber = livingNumber;
+        this.phaser = phaser;
+        livingBeing = Encyclopedia.values()[livingNumber];
+        startAmount = Registry.getStartAmount(livingBeing);
+        maxAge = Registry.getMaxAge(livingBeing);
+        maxSaturation = Registry.getMaxSaturationLevel(livingBeing);
     }
 
-    Encyclopedia livingBeing = Encyclopedia.values()[livingNumber];
-    ThreadLocalRandom random = ThreadLocalRandom.current();
-    int startAmount = Registry.getStartAmount(livingBeing);
-    double maxAge = Registry.getMaxAge(livingBeing);
-    double maxSaturation = Registry.getMaxSaturationLevel(livingBeing);
+    private final Encyclopedia livingBeing;
+    private final ThreadLocalRandom random = ThreadLocalRandom.current();
+    private final int startAmount;
+    private final double maxAge;
+    private final double maxSaturation;
 
     @Override
     public void run()
     {
 
+        phaser.register();
+        System.out.println("регистрация " + livingNumber);
         int x;
         int y;
         double age;
         double saturation;
-
         for (int i = 0; i < startAmount; i++)
         {
             x = random.nextInt(GeneralConstants.LENGTH);
@@ -40,6 +50,8 @@ public class PopulationTask implements Runnable
 
             LifeFormFactory.create(livingBeing, x, y, age, saturation);
         }
+        phaser.arriveAndDeregister();
+        System.out.println("дерегистрация " +livingNumber);
     }
 
     public double getRandomDouble(double bound)
