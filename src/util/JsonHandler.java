@@ -10,6 +10,8 @@ import model.properties.InfoDTO;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -31,14 +33,15 @@ public class JsonHandler
      * Исходный JSON должен представлять собой объект вида {@code Map<String, T>},
      * где ключи — это имена существ, соответствующие значениям {@link Encyclopedia}.
      *
-     * @param path       путь к JSON-файлу
+     * @param filePath       путь к JSON-файлу
      * @param valueClass класс значений, которые будут храниться в мапе
      * @param <T>        тип значений
      * @return {@code Map<Encyclopedia, T>} — десериализованный и приведённый по ключам JSON
      * @throws JsonMapConvertingException если возникла ошибка при чтении или преобразовании
      */
-    public static <T> Map<Encyclopedia, T> parseData(String path, Class<T> valueClass)
+    public static <T> Map<Encyclopedia, T> parseData(String filePath, Class<T> valueClass)
     {
+        String path = checkPath(filePath);
         try
         {
             Map<String, T> rawData = mapper.readValue(
@@ -154,6 +157,17 @@ public class JsonHandler
 
     public static Map<Encyclopedia, InfoDTO> parseLifeFormInfo(String path) {
         return parseData(path, new TypeReference<>() {});
+    }
+
+    private static String checkPath(String path)
+    {
+        Path filePath = Path.of(path);
+        if (filePath.isAbsolute())
+        {
+            return path;
+        }
+
+        return filePath.toAbsolutePath().toString();
     }
 
 }

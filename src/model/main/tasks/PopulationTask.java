@@ -34,24 +34,22 @@ public class PopulationTask implements Runnable
     @Override
     public void run()
     {
-
-        phaser.register();
-        System.out.println("регистрация " + livingNumber);
         int x;
         int y;
         double age;
         double saturation;
+        int created = 0;
+
         for (int i = 0; i < startAmount; i++)
         {
             x = random.nextInt(GeneralConstants.LENGTH);
             y = random.nextInt(GeneralConstants.HEIGHT);
             age = getRandomDouble(maxAge);
             saturation = getRandomDouble(maxSaturation);
-
             LifeFormFactory.create(livingBeing, x, y, age, saturation);
+            created++;
         }
         phaser.arriveAndDeregister();
-        System.out.println("дерегистрация " +livingNumber);
     }
 
     public double getRandomDouble(double bound)

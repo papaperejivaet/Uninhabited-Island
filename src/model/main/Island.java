@@ -5,13 +5,11 @@ import model.main.tasks.MoveTask;
 import model.main.tasks.PopulationTask;
 import model.main.tasks.LiveTask;
 import model.properties.Encyclopedia;
-import model.properties.Registry;
 import util.GeneralConstants;
 import model.properties.LivingBeingType;
 import view.Drawer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -28,17 +26,21 @@ public class Island
     {
         createMap();
         populateRandomly();
-        startSimulation();
+        simulate();
     }
 
-    private static void startSimulation()
+    private static void simulate()
     {
+        int i = 0;
         do
         {
-            simulate();
+            i++;
+            startSimulation();
             Drawer.drawField();
+            System.out.println("Cycle number: " + i);
         }
         while (Statistics.checkConditions());
+        shutdown();
     }
 
     private static void createMap()
@@ -62,13 +64,15 @@ public class Island
 
     private static void populateRandomly()
     {
-
         int livingBeingCounter = Encyclopedia.values().length;
+        phaser.bulkRegister(livingBeingCounter);
         for (int i = 0; i < livingBeingCounter; i++)
         {
             executor.submit(new PopulationTask(i, phaser));
         }
-        phaser.awaitAdvance(phaser.arriveAndDeregister());
+        System.out.println("Populate Randomly: before await");
+        phaser.arriveAndAwaitAdvance();
+        System.out.println("Populate Randomly: after await, registered: " + phaser.getRegisteredParties());
     }
 
 
@@ -77,10 +81,11 @@ public class Island
         return islandMap[y][x];
     }
 
-    private static void simulate()
+    private static void startSimulation()
     {
+        System.out.println("startSimulation");
+        phaser.bulkRegister(GeneralConstants.CELLS_AMOUNT);
 
-        phaser.register();
         for (Cell[] cells : islandMap)
         {
             for (Cell cell : cells)
@@ -88,11 +93,14 @@ public class Island
                 executor.submit(new MoveTask(cell, phaser));
             }
         }
-        System.out.println("first: " + phaser.getRegisteredParties());
-        phaser.awaitAdvance(phaser.arriveAndDeregister());
-        System.out.println("first end: " + phaser.getRegisteredParties());
 
-        phaser.register();
+        System.out.println("startSimulation: before 1 await");
+        phaser.arriveAndAwaitAdvance();
+        System.out.println("startSimulation: after 1 await, unarrived: " + phaser.getUnarrivedParties());
+
+
+        phaser.bulkRegister(GeneralConstants.CELLS_AMOUNT);
+
         for (Cell[] cells : islandMap)
         {
             for (Cell cell : cells)
@@ -100,11 +108,21 @@ public class Island
                 executor.submit(new LiveTask(cell, phaser));
             }
         }
-
-        System.out.println("second: " + phaser.getRegisteredParties());
-        phaser.awaitAdvance(phaser.arriveAndDeregister());
+        System.out.println("startSimulation: before 2 await");
+        try
+        {
+            Thread.sleep(1000);
+        }
+        catch (InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
+        System.out.println("Unarrived: " + phaser.getUnarrivedParties());
+        phaser.arriveAndAwaitAdvance();
+        System.out.println("startSimulation: after 2 await, unarrived: " + phaser.getUnarrivedParties());
         sendEveryCellChar();
         Statistics.nextCycle();
+
     }
 
     private static void sendEveryCellChar()
@@ -124,5 +142,24 @@ public class Island
         Drawer.receiveMostPopularChars(mostPopularAnimalChars, mostPopularPlantChars);
     }
 
+
+    private static void shutdown()
+    {
+        executor.shutdown();
+
+        try
+        {
+            boolean isTerminated = executor.awaitTermination(3, TimeUnit.SECONDS);
+            if (!isTerminated)
+            {
+                executor.shutdownNow();
+            }
+        }
+        catch (InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+    }
 
 }

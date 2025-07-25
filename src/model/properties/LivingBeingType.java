@@ -21,13 +21,16 @@ public enum LivingBeingType
     @Getter
     final Class<? extends Living> type;
 
+
     LivingBeingType(Class<? extends Living> type)
     {
         this.type = type;
+        members =  Collections.unmodifiableSet(Encyclopedia.getByType(this));
     }
 
+
     @Getter
-    private final Set<Encyclopedia> members = Collections.unmodifiableSet(Encyclopedia.getByType(this));
+    private final Set<Encyclopedia> members;
 
 
 }

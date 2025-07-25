@@ -10,12 +10,10 @@ import model.properties.LivingBeingType;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
-@EqualsAndHashCode
 public class Cell implements Comparable<Cell>
 {
     CellBiota biota = new CellBiota();
 
-    private final ReentrantLock lock = new ReentrantLock();
     @Getter
     private List<Cell> neighboringCells;
 
@@ -66,10 +64,14 @@ public class Cell implements Comparable<Cell>
         return biota.getRandomLiving(typeList);
     }
 
-    public boolean containsAny(Set<Encyclopedia> typeSet)
+    public boolean containsAny(LivingBeingType livingBeingType)
     {
-        return biota.containsAny(typeSet);
+        Set<Encyclopedia> typeSet = livingBeingType.getMembers();
+        boolean contains = biota.containsAny(typeSet);
+        System.out.println(this + ": " + contains);
+        return contains;
     }
+
 
     public String getCharOfMaxAmount(LivingBeingType livingBeingType)
     {
@@ -101,6 +103,22 @@ public class Cell implements Comparable<Cell>
         }
     }
 
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o == null || getClass() != o.getClass())
+        {
+            return false;
+        }
+        Cell cell = (Cell) o;
+        return x == cell.x && y == cell.y;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(x, y);
+    }
 
     @Override
     public int compareTo(Cell o)
@@ -113,5 +131,11 @@ public class Cell implements Comparable<Cell>
         {
             return Integer.compare(o.x, this.x);
         }
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Cell: " + x + "x " + y + "y ";
     }
 }

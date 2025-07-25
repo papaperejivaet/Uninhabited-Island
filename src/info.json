@@ -198,7 +198,7 @@
     "weight": 0.01,
     "maxCellAmount": 1000,
     "maxSpeed": 0,
-    "saturation": 0.0,
+    "saturation": 0.01,
     "maxAge": 0.08,
     "display": "🐛",
     "diet": {

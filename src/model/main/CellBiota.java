@@ -9,6 +9,7 @@ import model.properties.Registry;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -21,15 +22,10 @@ class CellBiota
 
     void addLivingBeing(Living living)
     {
-
         Encyclopedia livingBeing = Encyclopedia.getLivingBeing(living.getClass());
 
-        lock.lock();
-
-        biota.computeIfAbsent(livingBeing, _ -> new ArrayList<>());
+        biota.computeIfAbsent(livingBeing, _ -> new CopyOnWriteArrayList<>());
         putInMap(living, biota);
-
-        lock.unlock();
     }
 
     private void putInMap(Living living, Map<Encyclopedia, List<Living>> map)
@@ -40,11 +36,7 @@ class CellBiota
 
     void removeLivingBeing(Living living)
     {
-        lock.lock();
-
         removeFromMap(living, biota);
-
-        lock.unlock();
     }
 
     private void removeFromMap(Living living, Map<Encyclopedia, List<Living>> map)
@@ -58,19 +50,14 @@ class CellBiota
         }
     }
 
-    List<Living> getLivingBeings(Encyclopedia livingBeing)
+    public List<Living> getLivingBeings(Encyclopedia livingBeing)
     {
-        lock.lock();
-
-        if (biota.get(livingBeing).isEmpty())
+        List<Living> list = biota.get(livingBeing);
+        if (list == null || list.isEmpty())
         {
-            return null;
+            return Collections.emptyList();
         }
-        ArrayList<Living> livings = new ArrayList<>(biota.get(livingBeing));
-
-        lock.unlock();
-
-        return livings;
+        return new CopyOnWriteArrayList<>(list);
     }
 
     Set<Encyclopedia> getAllLivingBeingTypes()
@@ -85,14 +72,22 @@ class CellBiota
         int typeNumber;
         Encyclopedia currentType;
         List<Encyclopedia> typeList = new ArrayList<>(typeSet);
-        List<Living> livings;
+        List<Living> livings = null;
 
-        do
+        for (int i = 0; i < typeList.size(); i++)
         {
             typeNumber = random.nextInt(typeList.size());
             currentType = typeList.get(typeNumber);
+
+            if ((livings = biota.get(currentType)) != null && !livings.isEmpty())
+            {
+                break;
+            }
         }
-        while((livings = biota.get(currentType)) == null);
+        if (livings == null || livings.isEmpty())
+        {
+            return null;
+        }
 
         int livingNumber = random.nextInt(livings.size());
         return livings.get(livingNumber);
@@ -139,6 +134,7 @@ class CellBiota
 
         return false;
     }
+
 
 
 }

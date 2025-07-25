@@ -12,7 +12,7 @@ import java.util.*;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Registry
 {
-    private static final Map<Encyclopedia, InfoDTO> livingBeingInfo = JsonHandler.parseLifeFormInfo("C:\\Users\\ndpee\\IdeaProjects\\Uninhabited Island\\src\\info.json");
+    private static final Map<Encyclopedia, InfoDTO> livingBeingInfo = JsonHandler.parseLifeFormInfo("C:\\Users\\vikan\\IdeaProjects\\Uninhabited-Island\\src\\info.json");
 
 
 

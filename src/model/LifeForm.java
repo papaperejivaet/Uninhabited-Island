@@ -68,25 +68,24 @@ public abstract class LifeForm implements Living, Consumable
     @Override
     public boolean reproduce(Living livingBeing)
     {
-        if (livingBeing instanceof LifeForm lifeForm &&
-                !isDead && !lifeForm.isDead &&
-                !hasBred && !lifeForm.hasBred)
+        if (!(livingBeing instanceof LifeForm partner &&
+                !isDead && !partner.isDead &&
+                !hasBred && !partner.hasBred))
         {
+            return false;
+        }
+
             hasBred = true;
-            lifeForm.hasBred = true;
-            Living newborn = LifeFormFactory.createNewborn(livingBeingType, x, y);
+            partner.hasBred = true;
 
-            if (newborn instanceof LifeForm born)
-            {
-                born.hasBred = true;
-            }
-
+            LifeForm newborn = (LifeForm) LifeFormFactory.createNewborn(livingBeingType, x, y);
+            newborn.hasBred = true;
             currentCell.addLivingBeing(newborn);
-            if (lifeForm instanceof Animal)
+
+            if (this instanceof Animal)
             {
                 Statistics.registerBreeding(livingBeingType);
             }
-        }
         return hasBred;
     }
 
@@ -95,12 +94,18 @@ public abstract class LifeForm implements Living, Consumable
     @Override
     public boolean consume()
     {
-        ThreadLocalRandom random = ThreadLocalRandom.current();
-        Consumable food = findFood();
-        if (saturationLevel == Registry.getMaxSaturationLevel(livingBeingType) || isDead)
+        if (isDead || saturationLevel >= Registry.getMaxSaturationLevel(livingBeingType))
         {
             return false;
         }
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        Consumable food = findFood();
+
+        if (food == null)
+        {
+            return false;
+        }
+
         Integer eatingChance = getCurrentEatingChances(food);
         if (random.nextInt(100) < eatingChance)
         {
@@ -117,13 +122,9 @@ public abstract class LifeForm implements Living, Consumable
     {
         double weight = food.beConsumed();
 
-        double maxSaturationLevel = Registry.getMaxSaturationLevel(livingBeingType);;
+        double maxSaturationLevel = Registry.getMaxSaturationLevel(livingBeingType);
         saturationLevel += weight;
 
-        if (saturationLevel > maxSaturationLevel)
-        {
-            saturationLevel = maxSaturationLevel;
-        }
 
         return true;
     }
@@ -137,12 +138,14 @@ public abstract class LifeForm implements Living, Consumable
         }
 
         hasBred = false;
+        hasConsumed = false;
         saturationLevel -= (Registry.getMaxSaturationLevel(livingBeingType) / 100) * 5;
         age += GeneralConstants.CYCLE_TIME * 0.01;
 
-        if (age == Registry.getMaxAge(livingBeingType))
+        if (age >= Registry.getMaxAge(livingBeingType))
         {
             die(DeathCause.NATURAL);
+            return;
         }
         if (saturationLevel <= 0)
         {

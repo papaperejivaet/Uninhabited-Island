@@ -61,7 +61,7 @@ public class Statistics
 
         for (LivingBeingType livingBeingType : LivingBeingType.values())
         {
-            containsAny = cell.containsAny(livingBeingType.getMembers());
+            containsAny = cell.containsAny(livingBeingType);
             addInContainment(cell, livingBeingType, containsAny);
         }
     }
@@ -90,8 +90,12 @@ public class Statistics
 
     protected static boolean checkConditions()
     {
-        return animalContainment.containsValue(false) && carnivoreContainment.containsValue(false) &&
-                herbivoreContainment.containsValue(false) && plantContainment.containsValue(false) &&
+        for (Map.Entry<Cell, Boolean> entry : animalContainment.entrySet())
+        {
+            System.out.println(entry.getKey() + ":" + entry.getValue());
+        }
+        return  animalContainment.containsValue(true) && carnivoreContainment.containsValue(true) &&
+                herbivoreContainment.containsValue(true) && plantContainment.containsValue(true) &&
                 currentCycleNumber < GeneralConstants.MAX_CYCLES;
     }
 

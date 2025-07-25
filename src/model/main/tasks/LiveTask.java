@@ -6,6 +6,7 @@ import model.main.Cell;
 import model.main.Statistics;
 import model.properties.Encyclopedia;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.ThreadLocalRandom;
@@ -16,20 +17,22 @@ public class LiveTask implements Runnable
     private Cell cell;
     private Phaser phaser;
     private final ThreadLocalRandom random = ThreadLocalRandom.current();
+    public static List<Thread.State> statesBeforeConsume = new ArrayList<>();
+    public static List<Thread.State> statesAfterConsume = new ArrayList<>();
 
 
 
     @Override
     public void run()
     {
-        phaser.register();
-        for (Encyclopedia livingBeingType : cell.getAllLivingBeingTypes())
-        {
-            List<Living> livingBeings = cell.getLivingBeings(livingBeingType);
-            live(livingBeings);
-        }
-        Statistics.confirmAvailability(cell);
-        phaser.arriveAndDeregister();
+            for (Encyclopedia livingBeingType : cell.getAllLivingBeingTypes())
+            {
+                List<Living> livingBeings = cell.getLivingBeings(livingBeingType);
+                live(livingBeings);
+            }
+            Statistics.confirmAvailability(cell);
+            phaser.arriveAndDeregister();
+
     }
 
     private void live(List<Living> livingBeings)
@@ -43,7 +46,7 @@ public class LiveTask implements Runnable
             {
                 isFound = findCouple(livingBeings, livingBeing);
             }
-            while (isFound);
+            while(isFound);
 
         }
     }

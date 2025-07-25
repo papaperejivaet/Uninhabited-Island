@@ -63,7 +63,7 @@ public abstract class Animal extends LifeForm implements Mobile
     private Cell getNewCell()
     {
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        Integer maxSpeed = Registry.getMaxSpeed(livingBeingType);;
+        int maxSpeed = Registry.getMaxSpeed(livingBeingType) + 1;
         int stepsAmount = random.nextInt(maxSpeed);
         List<Cell> neighboringCells;
         int cellNumber;
@@ -71,7 +71,7 @@ public abstract class Animal extends LifeForm implements Mobile
 
         for (int i = 0; i < stepsAmount; i++)
         {
-            neighboringCells = currentCell.getNeighboringCells();
+            neighboringCells = newCell.getNeighboringCells();
             cellNumber = random.nextInt(neighboringCells.size());
             newCell = neighboringCells.get(cellNumber);
         }
