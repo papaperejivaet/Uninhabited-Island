@@ -1,5 +1,7 @@
 package view;
 
+import model.main.Statistics;
+import model.properties.DeathCause;
 import util.GeneralConstants;
 
 import java.util.List;
@@ -9,17 +11,11 @@ public class Drawer
 {
     private static final int ROWS = GeneralConstants.LENGTH;
     private static final int COLS = GeneralConstants.HEIGHT;
+    private static final String BORDER = "=".repeat(15);
 
     private static List<String> mostPopularAnimalChars;
     private static List<String> mostPopularPlantChars;
-//
-//    public static void draw()
-//    {
-//        System.out.println("╔═══════╗");
-//        System.out.printf("║%s  %s  ║\n", content[0][0], content[0][1]);
-//        System.out.printf("║%s  %s  ║\n", content[1][0], content[1][1]);
-//        System.out.println("╚═══════╝");
-//    }
+
 
     public static void receiveMostPopularChars(List<String> mostPopularAnimalChars,
                                                List<String> mostPopularPlantChars)
@@ -31,6 +27,7 @@ public class Drawer
     public static void drawField() {
         StringBuilder sb = new StringBuilder();
 
+        drawStatistics();
         drawTopBorder(sb);
 
         for (int row = 0; row < ROWS; row++) {
@@ -43,6 +40,16 @@ public class Drawer
             }
         }
         System.out.print(sb);
+    }
+
+    private static void drawStatistics()
+    {
+        System.out.println(BORDER + "DAY " + Statistics.getCurrentCycleNumber() + BORDER);
+        System.out.println("Животных спарено: " + Statistics.getBreedingCount());
+        System.out.println("Животных съедено: " + Statistics.getDeathCount(DeathCause.EATEN));
+        System.out.println("Животных умерло от голода: " + Statistics.getDeathCount(DeathCause.HUNGER));
+        System.out.println("Животных умерло от старости: " + Statistics.getDeathCount(DeathCause.NATURAL));
+        System.out.println("Животных, которые поели: " + Statistics.getAteCount());
     }
 
     private static void drawTopBorder(StringBuilder sb) {

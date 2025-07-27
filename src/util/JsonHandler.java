@@ -94,7 +94,7 @@ public class JsonHandler
         }
     }
 
-
+    //Debugging method
      public static <T> Map<Encyclopedia, T> parseDataCheck(String path, TypeReference<Map<String, T>> typeRef) {
         try {
             File file = new File(path);

@@ -59,16 +59,15 @@ public class Cell implements Comparable<Cell>
         return biota.getAllLivingBeingTypes();
     }
 
-    public Living getRandomLiving(Set<Encyclopedia> typeList)
+    public Living getRandomLiving(LivingBeingType lbType, Living exception)
     {
-        return biota.getRandomLiving(typeList);
+        return biota.getRandomLiving(lbType, exception);
     }
 
     public boolean containsAny(LivingBeingType livingBeingType)
     {
         Set<Encyclopedia> typeSet = livingBeingType.getMembers();
         boolean contains = biota.containsAny(typeSet);
-        System.out.println(this + ": " + contains);
         return contains;
     }
 

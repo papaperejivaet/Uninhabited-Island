@@ -11,7 +11,7 @@ import java.util.Set;
 
 public abstract class Carnivore extends Animal
 {
-    protected static Set<Encyclopedia> foodTypes = LivingBeingType.ANIMAL.getMembers();
+
 
     protected Carnivore(Cell cell, double age, double saturationLevel)
     {
@@ -22,6 +22,6 @@ public abstract class Carnivore extends Animal
     protected Consumable findFood()
     {
         //Т.к. Animal реализует Consumable
-        return (Consumable) currentCell.getRandomLiving(foodTypes);
+        return (Consumable) currentCell.getRandomLiving(LivingBeingType.ANIMAL, this);
     }
 }

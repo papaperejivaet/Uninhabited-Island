@@ -11,7 +11,6 @@ import java.util.Set;
 //Травоядное
 public abstract class Herbivore extends Animal
 {
-    protected static Set<Encyclopedia> foodTypes = LivingBeingType.PLANT.getMembers();
 
     protected Herbivore(Cell cell, double age, double saturationLevel)
     {
@@ -22,6 +21,6 @@ public abstract class Herbivore extends Animal
     protected Consumable findFood()
     {
         //Т.к. Plant реализует Consumable
-        return (Consumable) currentCell.getRandomLiving(foodTypes);
+        return (Consumable) currentCell.getRandomLiving(LivingBeingType.PLANT, this);
     }
 }

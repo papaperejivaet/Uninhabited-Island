@@ -65,25 +65,33 @@ class CellBiota
         return biota.keySet();
     }
 
-    //Список Encyclopedia, из которых выбирать
-    Living getRandomLiving(Set<Encyclopedia> typeSet)
+
+    Living getRandomLiving(LivingBeingType lbType, Living exception)
     {
+        Set<Encyclopedia> typeSet = excludedTypeSet(lbType, exception);
+
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        int typeNumber;
-        Encyclopedia currentType;
         List<Encyclopedia> typeList = new ArrayList<>(typeSet);
         List<Living> livings = null;
+        Set<Integer> alreadyTried = new HashSet<>();
 
-        for (int i = 0; i < typeList.size(); i++)
+        while (alreadyTried.size() < typeList.size())
         {
-            typeNumber = random.nextInt(typeList.size());
-            currentType = typeList.get(typeNumber);
+            int typeNumber = random.nextInt(typeList.size());
+            if (!alreadyTried.add(typeNumber))
+            {
+                continue;
+            }
 
-            if ((livings = biota.get(currentType)) != null && !livings.isEmpty())
+            Encyclopedia currentType = typeList.get(typeNumber);
+            livings = biota.get(currentType);
+
+            if (livings != null && !livings.isEmpty())
             {
                 break;
             }
         }
+
         if (livings == null || livings.isEmpty())
         {
             return null;
@@ -91,8 +99,17 @@ class CellBiota
 
         int livingNumber = random.nextInt(livings.size());
         return livings.get(livingNumber);
-
     }
+
+
+    private Set<Encyclopedia> excludedTypeSet(LivingBeingType lbType, Living exception)
+    {
+        Set<Encyclopedia> typeSet = new HashSet<>(lbType.getMembers());
+        Encyclopedia excludingType = Encyclopedia.getLivingBeing(exception.getClass());
+        typeSet.remove(excludingType);
+        return typeSet;
+    }
+
 
     String getMaxAmount()
     {
@@ -131,7 +148,6 @@ class CellBiota
                 return true;
             }
         }
-
         return false;
     }
 

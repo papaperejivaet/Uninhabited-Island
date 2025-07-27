@@ -106,7 +106,7 @@ public enum Encyclopedia
         Set<Encyclopedia> set = new HashSet<>();
         for (Map.Entry<Class<? extends Living>, Encyclopedia> entry : classes.entrySet())
         {
-            if (entry.getKey().getSuperclass() == type)
+            if (type.isAssignableFrom(entry.getKey()))
             {
                 set.add(entry.getValue());
             }

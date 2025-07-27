@@ -5,6 +5,7 @@ import model.main.tasks.MoveTask;
 import model.main.tasks.PopulationTask;
 import model.main.tasks.LiveTask;
 import model.properties.Encyclopedia;
+import model.properties.Registry;
 import util.GeneralConstants;
 import model.properties.LivingBeingType;
 import view.Drawer;
@@ -37,7 +38,6 @@ public class Island
             i++;
             startSimulation();
             Drawer.drawField();
-            System.out.println("Cycle number: " + i);
         }
         while (Statistics.checkConditions());
         shutdown();
@@ -70,9 +70,7 @@ public class Island
         {
             executor.submit(new PopulationTask(i, phaser));
         }
-        System.out.println("Populate Randomly: before await");
         phaser.arriveAndAwaitAdvance();
-        System.out.println("Populate Randomly: after await, registered: " + phaser.getRegisteredParties());
     }
 
 
@@ -83,7 +81,6 @@ public class Island
 
     private static void startSimulation()
     {
-        System.out.println("startSimulation");
         phaser.bulkRegister(GeneralConstants.CELLS_AMOUNT);
 
         for (Cell[] cells : islandMap)
@@ -94,9 +91,7 @@ public class Island
             }
         }
 
-        System.out.println("startSimulation: before 1 await");
         phaser.arriveAndAwaitAdvance();
-        System.out.println("startSimulation: after 1 await, unarrived: " + phaser.getUnarrivedParties());
 
 
         phaser.bulkRegister(GeneralConstants.CELLS_AMOUNT);
@@ -108,7 +103,7 @@ public class Island
                 executor.submit(new LiveTask(cell, phaser));
             }
         }
-        System.out.println("startSimulation: before 2 await");
+
         try
         {
             Thread.sleep(1000);
@@ -117,9 +112,8 @@ public class Island
         {
             throw new RuntimeException(e);
         }
-        System.out.println("Unarrived: " + phaser.getUnarrivedParties());
+
         phaser.arriveAndAwaitAdvance();
-        System.out.println("startSimulation: after 2 await, unarrived: " + phaser.getUnarrivedParties());
         sendEveryCellChar();
         Statistics.nextCycle();
 

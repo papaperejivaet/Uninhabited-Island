@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Statistics
 {
+    @Getter
     private static int currentCycleNumber = 0;
 
     private static final Map<Encyclopedia, Integer> naturalDeaths = new ConcurrentHashMap<>();
@@ -36,13 +37,8 @@ public class Statistics
 
     public static void registerDeath(Encyclopedia type, DeathCause deathCause)
     {
-        switch (deathCause)
-        {
-            case NATURAL -> register(type, naturalDeaths);
-            case EATEN -> register(type, eatenDeaths);
-            case HUNGER -> register(type, hungerDeaths);
-            case ACCIDENT -> register(type, accidentDeaths);
-        }
+        Map<Encyclopedia, Integer> deathMap = getDeathMap(deathCause);
+        register(type, deathMap);
     }
 
     public static void registerBreeding(Encyclopedia type)
@@ -90,10 +86,6 @@ public class Statistics
 
     protected static boolean checkConditions()
     {
-        for (Map.Entry<Cell, Boolean> entry : animalContainment.entrySet())
-        {
-            System.out.println(entry.getKey() + ":" + entry.getValue());
-        }
         return  animalContainment.containsValue(true) && carnivoreContainment.containsValue(true) &&
                 herbivoreContainment.containsValue(true) && plantContainment.containsValue(true) &&
                 currentCycleNumber < GeneralConstants.MAX_CYCLES;
@@ -104,5 +96,48 @@ public class Statistics
         currentCycleNumber++;
     }
 
+    public static int getBreedingCount()
+    {
+        int counter = 0;
+        for (Map.Entry<Encyclopedia, Integer> entry : bredCount.entrySet())
+        {
+            counter += entry.getValue();
+        }
+        return counter;
+    }
+    public static int getAteCount()
+    {
+        int counter = 0;
+        for (Map.Entry<Encyclopedia, Integer> entry : ateCount.entrySet())
+        {
+            counter += entry.getValue();
+        }
+        return counter;
+    }
+
+    public static int getDeathCount(DeathCause cause)
+    {
+        int counter = 0;
+
+        Map<Encyclopedia, Integer> deathMap = getDeathMap(cause);
+
+        for (Map.Entry<Encyclopedia, Integer> entry : deathMap.entrySet())
+        {
+            counter += entry.getValue();
+        }
+
+        return counter;
+    }
+
+    private static Map<Encyclopedia, Integer> getDeathMap(DeathCause cause)
+    {
+        return switch (cause)
+        {
+            case NATURAL -> naturalDeaths;
+            case EATEN -> eatenDeaths;
+            case HUNGER -> hungerDeaths;
+            case ACCIDENT -> accidentDeaths;
+        };
+    }
 
 }
