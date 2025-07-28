@@ -1,5 +1,6 @@
 package model.main;
 
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import model.Living;
@@ -9,6 +10,7 @@ import model.properties.LivingBeingType;
 
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
+
 
 public class Cell implements Comparable<Cell>
 {
@@ -23,7 +25,8 @@ public class Cell implements Comparable<Cell>
     private final int x;
     @Getter
     private final int y;
-
+    @Getter
+    private final ReentrantLock lock = new ReentrantLock();
 
     private static final int[][] directions = {
             {-1, -1}, {-1, 0}, {-1, 1},
@@ -59,9 +62,9 @@ public class Cell implements Comparable<Cell>
         return biota.getAllLivingBeingTypes();
     }
 
-    public Living getRandomLiving(LivingBeingType lbType, Living exception)
+    public Living getRandomLiving(Set<Encyclopedia> typeSet, Living exception)
     {
-        return biota.getRandomLiving(lbType, exception);
+        return biota.getRandomLiving(typeSet, exception);
     }
 
     public boolean containsAny(LivingBeingType livingBeingType)
@@ -75,6 +78,11 @@ public class Cell implements Comparable<Cell>
     public String getCharOfMaxAmount(LivingBeingType livingBeingType)
     {
         return biota.getCharOfMaxAmount(livingBeingType);
+    }
+
+    public int getAmountOf(Encyclopedia type)
+    {
+       return biota.getAmountOf(type);
     }
 
     public void findNeighboringCells()

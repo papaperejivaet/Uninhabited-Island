@@ -27,8 +27,8 @@
     "display": "🐍",
     "diet": {
       "FOX": 15,
-      "RABBIT": 20,
-      "MOUSE": 40,
+      "RABBIT": 80,
+      "MOUSE": 90,
       "DUCK": 10
     }
   },
@@ -125,7 +125,7 @@
     "maxAge": 0.75,
     "display": "🐁",
     "diet": {
-      "CATERPILLAR": 90,
+      "CATERPILLAR": 70,
       "GRASS": 100,
       "FLOWER": 100,
       "MUSHROOM": 100
@@ -209,10 +209,10 @@
   },
   "GRASS": {
     "weight": 1.0,
-    "maxCellAmount": 100,
+    "maxCellAmount": 300,
     "maxSpeed": -1,
     "saturation": 0.2,
-    "maxAge": 0.33,
+    "maxAge": 1,
     "display": "🌿"
   },
   "FLOWER": {
@@ -220,7 +220,7 @@
     "maxCellAmount": 60,
     "maxSpeed": -1,
     "saturation": 0.15,
-    "maxAge": 0.5,
+    "maxAge": 1,
     "display": "🌸"
   },
   "MUSHROOM": {
@@ -228,7 +228,7 @@
     "maxCellAmount": 40,
     "maxSpeed": -1,
     "saturation": 0.01,
-    "maxAge": 0.25,
+    "maxAge": 1,
     "display": "🍄"
   }
 }

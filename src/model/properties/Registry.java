@@ -12,7 +12,7 @@ import java.util.*;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Registry
 {
-    private static final Map<Encyclopedia, InfoDTO> livingBeingInfo = JsonHandler.parseLifeFormInfo("C:\\Users\\vikan\\IdeaProjects\\Uninhabited-Island\\src\\info.json");
+    private static final Map<Encyclopedia, InfoDTO> livingBeingInfo = JsonHandler.parseLifeFormInfo("C:\\Users\\ndpee\\IdeaProjects\\Uninhabited Island\\src\\info.json");
 
 
 
@@ -64,7 +64,7 @@ public final class Registry
 
     public static Integer getStartAmount(Encyclopedia type)
     {
-        double startAmount = ((double) (GeneralConstants.HEIGHT + GeneralConstants.LENGTH) / 1000) * getMaxCellAmount(type);
+        double startAmount = ((double) (GeneralConstants.HEIGHT + GeneralConstants.LENGTH) / 100) * getMaxCellAmount(type) * 5;
         return (int) Math.round(startAmount);
     }
 

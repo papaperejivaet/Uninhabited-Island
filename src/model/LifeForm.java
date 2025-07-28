@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReentrantLock;
 
-@EqualsAndHashCode
+@EqualsAndHashCode()
 public abstract class LifeForm implements Living, Consumable
 {
     protected ReentrantLock lock = new ReentrantLock();
@@ -80,10 +80,11 @@ public abstract class LifeForm implements Living, Consumable
             hasBred = true;
             partner.hasBred = true;
 
+
             LifeForm newborn = (LifeForm) LifeFormFactory.createNewborn(livingBeingType, x, y);
             newborn.hasBred = true;
             currentCell.addLivingBeing(newborn);
-
+            decreaseSaturation();
             if (this instanceof Animal)
             {
                 Statistics.registerBreeding(livingBeingType);
@@ -103,13 +104,14 @@ public abstract class LifeForm implements Living, Consumable
         ThreadLocalRandom random = ThreadLocalRandom.current();
         Consumable food = findFood();
 
-
         if (food == null)
         {
             return false;
         }
 
-        Integer eatingChance = getCurrentEatingChances(food);
+        Integer chanceObj = getCurrentEatingChances(food);
+        int eatingChance = (chanceObj == null ? 0 : chanceObj);
+
         if (random.nextInt(100) < eatingChance)
         {
             return increaseSaturationLevel(food);
@@ -124,8 +126,6 @@ public abstract class LifeForm implements Living, Consumable
     public boolean increaseSaturationLevel(Consumable food)
     {
         double weight = food.beConsumed();
-
-        double maxSaturationLevel = Registry.getMaxSaturationLevel(livingBeingType);
         saturationLevel += weight;
 
 
@@ -170,10 +170,15 @@ public abstract class LifeForm implements Living, Consumable
         }
     }
 
-    public Encyclopedia getEncyclopediaName()
+    protected void decreaseSaturation()
     {
-        return livingBeingType;
-    }
+        saturationLevel -= Registry.getMaxSaturationLevel(livingBeingType) * 0.02; // например, -2% от макс
+        if (saturationLevel < 0)
+        {
+            saturationLevel = 0;
+            die(DeathCause.HUNGER);
+        }
 
+    }
 
 }

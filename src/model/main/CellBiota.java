@@ -1,8 +1,11 @@
 package model.main;
 
 import lombok.AccessLevel;
+
 import lombok.NoArgsConstructor;
 import model.Living;
+
+import model.properties.DeathCause;
 import model.properties.Encyclopedia;
 import model.properties.LivingBeingType;
 import model.properties.Registry;
@@ -11,43 +14,56 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.locks.ReentrantLock;
+
 
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 class CellBiota
 {
     private final Map<Encyclopedia, List<Living>> biota = new ConcurrentHashMap<>();
 
-    private final ReentrantLock lock = new ReentrantLock();
 
     void addLivingBeing(Living living)
     {
         Encyclopedia livingBeing = Encyclopedia.getLivingBeing(living.getClass());
 
-        biota.computeIfAbsent(livingBeing, _ -> new CopyOnWriteArrayList<>());
-        putInMap(living, biota);
+        biota.computeIfAbsent(livingBeing, k -> new CopyOnWriteArrayList<>());
+        putInMap(living);
     }
 
-    private void putInMap(Living living, Map<Encyclopedia, List<Living>> map)
+    private void putInMap(Living living)
     {
-        List<Living> livings = map.get(Encyclopedia.getLivingBeing(living.getClass()));
+        List<Living> livings = biota.get(Encyclopedia.getLivingBeing(living.getClass()));
+        if (livings.size() > Registry.getMaxCellAmount(Encyclopedia.getLivingBeing(living.getClass())))
+        {
+            living.die(DeathCause.ACCIDENT);
+            return;
+        }
         livings.add(living);
     }
 
-    void removeLivingBeing(Living living)
-    {
-        removeFromMap(living, biota);
-    }
 
-    private void removeFromMap(Living living, Map<Encyclopedia, List<Living>> map)
+
+    public void removeLivingBeing(Living living)
     {
+
         Encyclopedia livingBeingType = Encyclopedia.getLivingBeing(living.getClass());
-        List<Living> livings = map.get(livingBeingType);
-        livings.remove(living);
+        List<Living> livings = biota.get(livingBeingType);
+
+        if (livings == null)
+        {
+            return;
+        }
+
+        if (!livings.isEmpty())
+        {
+            livings.remove(living);
+        }
+
         if (livings.isEmpty())
         {
-            map.remove(livingBeingType);
+            biota.remove(livingBeingType);
         }
+
     }
 
     public List<Living> getLivingBeings(Encyclopedia livingBeing)
@@ -66,61 +82,39 @@ class CellBiota
     }
 
 
-    Living getRandomLiving(LivingBeingType lbType, Living exception)
-    {
-        Set<Encyclopedia> typeSet = excludedTypeSet(lbType, exception);
-
-        ThreadLocalRandom random = ThreadLocalRandom.current();
-        List<Encyclopedia> typeList = new ArrayList<>(typeSet);
-        List<Living> livings = null;
-        Set<Integer> alreadyTried = new HashSet<>();
-
-        while (alreadyTried.size() < typeList.size())
-        {
-            int typeNumber = random.nextInt(typeList.size());
-            if (!alreadyTried.add(typeNumber))
-            {
-                continue;
-            }
-
-            Encyclopedia currentType = typeList.get(typeNumber);
-            livings = biota.get(currentType);
-
-            if (livings != null && !livings.isEmpty())
-            {
-                break;
-            }
+    Living getRandomLiving(Set<Encyclopedia> baseSet, Living exception) {
+        // 1) Скопировать базовый набор и убрать текущего, если надо
+        Set<Encyclopedia> typeSet = new HashSet<>(baseSet);
+        if (exception != null) {
+            typeSet.remove(Encyclopedia.getLivingBeing(exception.getClass()));
         }
 
-        if (livings == null || livings.isEmpty())
-        {
+        // 2) Если после исключения нет типов — сразу null
+        if (typeSet.isEmpty()) {
             return null;
         }
 
-        int livingNumber = random.nextInt(livings.size());
-        return livings.get(livingNumber);
+        // 3) Перемешать список типов
+        List<Encyclopedia> typeList = new ArrayList<>(typeSet);
+        Collections.shuffle(typeList, ThreadLocalRandom.current());
+
+        // 4) Перебрать каждый тип
+        for (Encyclopedia type : typeList) {
+            List<Living> livings = biota.get(type);
+            // 5) Пропускаем, если нет ни одного
+            if (livings == null || livings.isEmpty()) {
+                continue;
+            }
+            // 6) Безопасный выбор случайного индекса
+            int idx = ThreadLocalRandom.current().nextInt(livings.size());
+            return livings.get(idx);
+        }
+
+        // 7) Ничего не нашли
+        return null;
     }
 
 
-    private Set<Encyclopedia> excludedTypeSet(LivingBeingType lbType, Living exception)
-    {
-        Set<Encyclopedia> typeSet = new HashSet<>(lbType.getMembers());
-        Encyclopedia excludingType = Encyclopedia.getLivingBeing(exception.getClass());
-        typeSet.remove(excludingType);
-        return typeSet;
-    }
-
-
-    String getMaxAmount()
-    {
-        Encyclopedia type = Collections.max(
-                biota.entrySet(),
-                Map.Entry.comparingByValue(
-                        Comparator.comparingInt(List::size)
-                ))
-                .getKey();
-        return Registry.getDisplay(type);
-    }
 
     //Для Drawer
     String getCharOfMaxAmount(LivingBeingType livingBeingType)
@@ -151,6 +145,14 @@ class CellBiota
         return false;
     }
 
-
+    int getAmountOf(Encyclopedia type)
+    {
+        List<Living> livings = biota.get(type);
+        if (livings != null)
+        {
+            return livings.size();
+        }
+        return 0;
+    }
 
 }

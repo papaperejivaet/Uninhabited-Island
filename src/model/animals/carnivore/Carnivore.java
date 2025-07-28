@@ -4,10 +4,8 @@ package model.animals.carnivore;
 import model.Consumable;
 import model.main.Cell;
 import model.animals.Animal;
-import model.properties.Encyclopedia;
 import model.properties.LivingBeingType;
 
-import java.util.Set;
 
 public abstract class Carnivore extends Animal
 {
@@ -22,6 +20,6 @@ public abstract class Carnivore extends Animal
     protected Consumable findFood()
     {
         //Т.к. Animal реализует Consumable
-        return (Consumable) currentCell.getRandomLiving(LivingBeingType.ANIMAL, this);
+        return (Consumable) currentCell.getRandomLiving(LivingBeingType.ANIMAL.getMembers(), this);
     }
 }

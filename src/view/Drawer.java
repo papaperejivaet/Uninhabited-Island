@@ -1,7 +1,10 @@
 package view;
 
+import model.main.Cell;
+import model.main.Island;
 import model.main.Statistics;
 import model.properties.DeathCause;
+import model.properties.EndReason;
 import util.GeneralConstants;
 
 import java.util.List;
@@ -49,7 +52,7 @@ public class Drawer
         System.out.println("Животных съедено: " + Statistics.getDeathCount(DeathCause.EATEN));
         System.out.println("Животных умерло от голода: " + Statistics.getDeathCount(DeathCause.HUNGER));
         System.out.println("Животных умерло от старости: " + Statistics.getDeathCount(DeathCause.NATURAL));
-        System.out.println("Животных, которые поели: " + Statistics.getAteCount());
+        System.out.println("Животные, которые поели: " + Statistics.getAteCount());
     }
 
     private static void drawTopBorder(StringBuilder sb) {
@@ -65,16 +68,17 @@ public class Drawer
         for (int col = 0; col < COLS; col++) {
             index = row * COLS + col;
             String animalChar = mostPopularAnimalChars.get(index);
-            sb.append(animalChar).append("  ").append("║");
+            String plantChar = mostPopularPlantChars.get(index);
+            sb.append(animalChar).append(plantChar).append("║");
         }
         sb.append("\n");
 
-        // Нижняя строка с растениями
+        // Нижняя строка, v
         sb.append("║");
         for (int col = 0; col < COLS; col++) {
             index = row * COLS + col;
-            String plantChar = mostPopularPlantChars.get(index);
-            sb.append(plantChar).append("  ").append("║");
+
+            sb.append("    ").append("║");
         }
         sb.append("\n");
     }
@@ -91,5 +95,28 @@ public class Drawer
         sb.append("════╝\n");
     }
 
+    public static void drawEnd(EndReason reason)
+    {
+        switch (reason)
+        {
+            case ALL_DEAD -> System.out.println("Все животные погибли");
+            case ONLY_CARNIVORE_LEFT -> System.out.println("Остались только хищники");
+            case ONLY_HERBIVORE_LEFT -> System.out.println("Остались только травоядные");
+            case TIMEOUT -> System.out.println("Закончилось время!");
+            case NO_PLANTS_LEFT -> System.out.println("Все растения вымерли!");
+        }
+    }
+
+    public static void drawEnd()
+    {
+        System.out.println("Остались на поле: ");
+        for (Cell[] cells : Island.getIslandMap())
+        {
+            for (Cell cell : cells)
+            {
+
+            }
+        }
+    }
 
 }

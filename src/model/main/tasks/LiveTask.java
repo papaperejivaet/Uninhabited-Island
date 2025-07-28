@@ -6,7 +6,6 @@ import model.main.Cell;
 import model.main.Statistics;
 import model.properties.Encyclopedia;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.ThreadLocalRandom;
@@ -17,22 +16,25 @@ public class LiveTask implements Runnable
     private Cell cell;
     private Phaser phaser;
     private final ThreadLocalRandom random = ThreadLocalRandom.current();
-    public static List<Thread.State> statesBeforeConsume = new ArrayList<>();
-    public static List<Thread.State> statesAfterConsume = new ArrayList<>();
 
 
 
     @Override
-    public void run()
-    {
-            for (Encyclopedia livingBeingType : cell.getAllLivingBeingTypes())
-            {
+    public void run() {
+        try {
+            for (Encyclopedia livingBeingType : cell.getAllLivingBeingTypes()) {
                 List<Living> livingBeings = cell.getLivingBeings(livingBeingType);
                 live(livingBeings);
             }
             Statistics.confirmAvailability(cell);
+        } catch (Throwable t) {
+            // на всякий случай залогировать, чтобы видеть, что пошло не так
+            System.err.println("Exception in LiveTask for cell " + cell + ": " + t);
+            t.printStackTrace();
+            t.getCause();
+        } finally {
             phaser.arriveAndDeregister();
-
+        }
     }
 
     private void live(List<Living> livingBeings)
@@ -41,22 +43,20 @@ public class LiveTask implements Runnable
         {
             livingBeing.grow();
             livingBeing.consume();
-            boolean isFound;
-            do
+            if (Statistics.getCurrentCycleNumber() % 5 == 0)
             {
-                isFound = findCouple(livingBeings, livingBeing);
+                breed(livingBeings, livingBeing);
             }
-            while(isFound);
-
         }
     }
 
-    private boolean findCouple(List<Living> livingBeings, Living livingBeing)
+    private void breed(List<Living> livingBeings, Living livingBeing)
     {
         int number = livingBeings.indexOf(livingBeing);
+
         if (number == livingBeings.size() - 1)
         {
-            return false;
+            return;
         }
         Living couple;
 
@@ -65,10 +65,9 @@ public class LiveTask implements Runnable
             couple = livingBeings.get(i);
             if (livingBeing.reproduce(couple))
             {
-                return true;
+                return;
             }
         }
-        return false;
     }
 
 

@@ -1,11 +1,11 @@
 package model.main;
 
 
+import lombok.Getter;
 import model.main.tasks.MoveTask;
 import model.main.tasks.PopulationTask;
 import model.main.tasks.LiveTask;
 import model.properties.Encyclopedia;
-import model.properties.Registry;
 import util.GeneralConstants;
 import model.properties.LivingBeingType;
 import view.Drawer;
@@ -16,6 +16,7 @@ import java.util.concurrent.*;
 
 public class Island
 {
+    @Getter
     private static final Cell[][] islandMap = new Cell[GeneralConstants.HEIGHT][GeneralConstants.LENGTH];
 
     private static final ExecutorService executor = Executors.newFixedThreadPool(GeneralConstants.MAX_PROCESSING_THREADS);
@@ -27,20 +28,19 @@ public class Island
     {
         createMap();
         populateRandomly();
-        simulate();
+        startSimulation();
+        shutdown();
     }
 
-    private static void simulate()
+    private static void startSimulation()
     {
-        int i = 0;
         do
         {
-            i++;
-            startSimulation();
+            simulate();
             Drawer.drawField();
         }
         while (Statistics.checkConditions());
-        shutdown();
+
     }
 
     private static void createMap()
@@ -65,11 +65,12 @@ public class Island
     private static void populateRandomly()
     {
         int livingBeingCounter = Encyclopedia.values().length;
-        phaser.bulkRegister(livingBeingCounter);
         for (int i = 0; i < livingBeingCounter; i++)
         {
             executor.submit(new PopulationTask(i, phaser));
         }
+       // sleep();
+      //  System.out.println("End of the Population Task, unarrived: " + phaser.getUnarrivedParties());
         phaser.arriveAndAwaitAdvance();
     }
 
@@ -79,10 +80,9 @@ public class Island
         return islandMap[y][x];
     }
 
-    private static void startSimulation()
+    private static void simulate()
     {
         phaser.bulkRegister(GeneralConstants.CELLS_AMOUNT);
-
         for (Cell[] cells : islandMap)
         {
             for (Cell cell : cells)
@@ -90,12 +90,13 @@ public class Island
                 executor.submit(new MoveTask(cell, phaser));
             }
         }
+        //debug
+      //  sleep();
+       // System.out.println("End of the Move Task, unarrived: " + phaser.getUnarrivedParties());
 
         phaser.arriveAndAwaitAdvance();
 
-
         phaser.bulkRegister(GeneralConstants.CELLS_AMOUNT);
-
         for (Cell[] cells : islandMap)
         {
             for (Cell cell : cells)
@@ -103,15 +104,9 @@ public class Island
                 executor.submit(new LiveTask(cell, phaser));
             }
         }
-
-        try
-        {
-            Thread.sleep(1000);
-        }
-        catch (InterruptedException e)
-        {
-            throw new RuntimeException(e);
-        }
+        //debug
+    //    sleep();
+    //    System.out.println("End of the Live Task, unarrived: " + phaser.getUnarrivedParties());
 
         phaser.arriveAndAwaitAdvance();
         sendEveryCellChar();
@@ -154,6 +149,18 @@ public class Island
             throw new RuntimeException(e);
         }
 
+    }
+
+    private static void sleep()
+    {
+        try
+        {
+            Thread.sleep(300);
+        }
+        catch (InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
 }

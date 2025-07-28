@@ -2,6 +2,7 @@ package model.main.tasks;
 
 import lombok.AllArgsConstructor;
 import model.Living;
+import model.Mobile;
 import model.animals.Animal;
 import model.main.Cell;
 import model.properties.Encyclopedia;
@@ -19,17 +20,21 @@ public class MoveTask implements Runnable
     private final Phaser phaser;
 
 
-
     @Override
-    public void run()
-    {
-        for (Encyclopedia livingBeingType : cell.getAllLivingBeingTypes())
-        {
-            List<Living> livingBeings = cell.getLivingBeings(livingBeingType);
-            move(livingBeings);
+    public void run() {
+        try {
+            for (Encyclopedia livingBeingType : cell.getAllLivingBeingTypes()) {
+                List<Living> livingBeings = cell.getLivingBeings(livingBeingType);
+                move(livingBeings);
+            }
+        } catch (Throwable t) {
+            System.err.println("Exception in MoveTask for cell " + cell + ":");
+            t.printStackTrace();
+            t.getCause();
+        } finally {
+            phaser.arriveAndDeregister();
+           // System.out.println("End of MoveTask for " + cell + ", unarrived: " + phaser.getUnarrivedParties());
         }
-        phaser.arriveAndDeregister();
-
     }
 
 
@@ -37,9 +42,9 @@ public class MoveTask implements Runnable
     {
         for (Living livingBeing : livingBeings)
         {
-            if (livingBeing instanceof Animal animal && !animal.hasMoved())
+            if (livingBeing instanceof Mobile mobile)
             {
-               animal.move();
+               mobile.move();
             }
         }
     }

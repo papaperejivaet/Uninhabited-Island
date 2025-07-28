@@ -5,8 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import model.properties.DeathCause;
 import model.properties.Encyclopedia;
+import model.properties.EndReason;
 import model.properties.LivingBeingType;
 import util.GeneralConstants;
+import view.Drawer;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -86,9 +88,32 @@ public class Statistics
 
     protected static boolean checkConditions()
     {
-        return  animalContainment.containsValue(true) && carnivoreContainment.containsValue(true) &&
-                herbivoreContainment.containsValue(true) && plantContainment.containsValue(true) &&
-                currentCycleNumber < GeneralConstants.MAX_CYCLES;
+        if (!animalContainment.containsValue(true))
+        {
+            Drawer.drawEnd(EndReason.ALL_DEAD);
+            return false;
+        }
+        if (!carnivoreContainment.containsValue(true))
+        {
+            Drawer.drawEnd(EndReason.ONLY_HERBIVORE_LEFT);
+            return false;
+        }
+        if (!herbivoreContainment.containsValue(true))
+        {
+            Drawer.drawEnd(EndReason.ONLY_CARNIVORE_LEFT);
+            return false;
+        }
+        if (!plantContainment.containsValue(true))
+        {
+            Drawer.drawEnd(EndReason.NO_PLANTS_LEFT);
+        }
+        if (currentCycleNumber >= GeneralConstants.MAX_CYCLES)
+        {
+            Drawer.drawEnd(EndReason.TIMEOUT);
+            return false;
+        }
+
+        return true;
     }
 
     protected static void nextCycle()
