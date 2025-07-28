@@ -48,11 +48,9 @@ public abstract class LifeForm implements Living, Consumable
     @Override
     public void die(DeathCause cause)
     {
-        lock.lock();
         isDead = true;
         hasBred = true;
         hasConsumed = true;
-        lock.unlock();
         currentCell.removeLivingBeing(this);
     }
 

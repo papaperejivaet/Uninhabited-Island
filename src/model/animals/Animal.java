@@ -10,8 +10,6 @@ import model.properties.Registry;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
 
 
 public abstract class Animal extends LifeForm implements Mobile
@@ -26,53 +24,17 @@ public abstract class Animal extends LifeForm implements Mobile
 
 
     @Override
-    public void move() {
+    public void move()
+    {
         if (hasMoved) return;
 
-        Cell from = currentCell;
-        Cell to = getNewCell();
-
-        // Порядок захвата локов
-        Cell first = System.identityHashCode(from) < System.identityHashCode(to) ? from : to;
-        Cell second = (from == first) ? to : from;
-
-        ReentrantLock firstLock = first.getLock();
-        ReentrantLock secondLock = second.getLock();
-
-        boolean firstAcquired = false;
-        boolean secondAcquired = false;
-
-        try {
-            // Попробовать захватить первый лок
-            firstAcquired = firstLock.tryLock(10, TimeUnit.MICROSECONDS);
-            if (!firstAcquired) return;
-
-            // Попробовать захватить второй лок
-            secondAcquired = secondLock.tryLock(10, TimeUnit.MICROSECONDS);
-            if (!secondAcquired) return;
-
-            // Переместиться
-            if (to.getAmountOf(livingBeingType) == Registry.getMaxCellAmount(livingBeingType))
-            {
-                die(DeathCause.ACCIDENT);
-                return;
-            }
-            currentCell.removeLivingBeing(this);
-            currentCell = to;
-            currentCell.addLivingBeing(this);
-            x = currentCell.getX();
-            y = currentCell.getY();
-            hasMoved = true;
-            decreaseSaturation();
-
-        } catch (InterruptedException _) {
-            Thread.currentThread().interrupt();
-        }
-        finally
-        {
-            if (firstAcquired) firstLock.unlock();
-            if (secondAcquired) secondLock.unlock();
-        }
+        currentCell.removeLivingBeing(this);
+        currentCell = getNewCell();
+        currentCell.addLivingBeing(this);
+        x = currentCell.getX();
+        y = currentCell.getY();
+        hasMoved = true;
+        decreaseSaturation();
     }
 
     @Override

@@ -62,7 +62,7 @@ public class Drawer
     }
 
     private static void drawCellContent(StringBuilder sb, int row) {
-        // Верхняя строка с животными
+        // Верхняя строка с животными и растениями
         int index;
         sb.append("║");
         for (int col = 0; col < COLS; col++) {
@@ -73,11 +73,9 @@ public class Drawer
         }
         sb.append("\n");
 
-        // Нижняя строка, v
+
         sb.append("║");
         for (int col = 0; col < COLS; col++) {
-            index = row * COLS + col;
-
             sb.append("    ").append("║");
         }
         sb.append("\n");
@@ -97,14 +95,16 @@ public class Drawer
 
     public static void drawEnd(EndReason reason)
     {
+        System.out.println(BORDER.repeat(7));
         switch (reason)
         {
-            case ALL_DEAD -> System.out.println("Все животные погибли");
-            case ONLY_CARNIVORE_LEFT -> System.out.println("Остались только хищники");
-            case ONLY_HERBIVORE_LEFT -> System.out.println("Остались только травоядные");
-            case TIMEOUT -> System.out.println("Закончилось время!");
-            case NO_PLANTS_LEFT -> System.out.println("Все растения вымерли!");
+            case ALL_DEAD -> System.out.println("                                        Все животные погибли");
+            case ONLY_CARNIVORE_LEFT -> System.out.println("                                        Остались только хищники");
+            case ONLY_HERBIVORE_LEFT -> System.out.println("                                        Остались только травоядные");
+            case TIMEOUT -> System.out.println("                                        Закончилось время!");
+            case NO_PLANTS_LEFT -> System.out.println("                                        Все растения вымерли!");
         }
+        System.out.println(BORDER.repeat(7));
     }
 
     public static void drawEnd()
