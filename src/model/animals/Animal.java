@@ -1,6 +1,7 @@
 package model.animals;
 
 
+import lombok.EqualsAndHashCode;
 import model.LifeForm;
 import model.Mobile;
 import model.main.Cell;
@@ -10,8 +11,10 @@ import model.properties.Registry;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
-
+@EqualsAndHashCode(callSuper = true)
 public abstract class Animal extends LifeForm implements Mobile
 {
     boolean hasMoved;
@@ -24,17 +27,46 @@ public abstract class Animal extends LifeForm implements Mobile
 
 
     @Override
-    public void move()
-    {
+    public void move() {
         if (hasMoved) return;
 
-        currentCell.removeLivingBeing(this);
-        currentCell = getNewCell();
-        currentCell.addLivingBeing(this);
-        x = currentCell.getX();
-        y = currentCell.getY();
-        hasMoved = true;
-        decreaseSaturation();
+        Cell from = currentCell;
+        Cell to = getNewCell();
+
+        // Порядок захвата локов
+        Cell first = System.identityHashCode(from) < System.identityHashCode(to) ? from : to;
+        Cell second = (from == first) ? to : from;
+
+        ReentrantLock firstLock = first.getLock();
+        ReentrantLock secondLock = second.getLock();
+
+        boolean firstAcquired = false;
+        boolean secondAcquired = false;
+
+        try {
+            // Попробовать захватить первый лок
+            firstAcquired = firstLock.tryLock(10, TimeUnit.MILLISECONDS);
+            if (!firstAcquired) return;
+
+            // Попробовать захватить второй лок
+            secondAcquired = secondLock.tryLock(10, TimeUnit.MILLISECONDS);
+            if (!secondAcquired) return;
+
+            // Переместиться
+            currentCell.removeLivingBeing(this);
+            currentCell = to;
+            currentCell.addLivingBeing(this);
+            x = currentCell.getX();
+            y = currentCell.getY();
+            hasMoved = true;
+            decreaseSaturationLevel();
+
+        } catch (InterruptedException _) {
+            Thread.currentThread().interrupt();
+        } finally {
+            if (secondAcquired) secondLock.unlock();
+            if (firstAcquired) firstLock.unlock();
+        }
     }
 
     @Override
@@ -83,8 +115,4 @@ public abstract class Animal extends LifeForm implements Mobile
         return hasConsumed;
     }
 
-    public boolean hasMoved()
-    {
-        return hasMoved;
-    }
 }

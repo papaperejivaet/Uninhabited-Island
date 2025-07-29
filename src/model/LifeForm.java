@@ -82,7 +82,7 @@ public abstract class LifeForm implements Living, Consumable
             LifeForm newborn = (LifeForm) LifeFormFactory.createNewborn(livingBeingType, x, y);
             newborn.hasBred = true;
             currentCell.addLivingBeing(newborn);
-            decreaseSaturation();
+            decreaseSaturationLevel();
             if (this instanceof Animal)
             {
                 Statistics.registerBreeding(livingBeingType);
@@ -140,7 +140,7 @@ public abstract class LifeForm implements Living, Consumable
 
         hasBred = false;
         hasConsumed = false;
-        saturationLevel -= (Registry.getMaxSaturationLevel(livingBeingType) / 100) * 5;
+        decreaseSaturationLevel();
         age += GeneralConstants.CYCLE_TIME * 0.01;
 
         if (age >= Registry.getMaxAge(livingBeingType))
@@ -168,9 +168,9 @@ public abstract class LifeForm implements Living, Consumable
         }
     }
 
-    protected void decreaseSaturation()
+    protected void decreaseSaturationLevel()
     {
-        saturationLevel -= Registry.getMaxSaturationLevel(livingBeingType) * 0.02; // например, -2% от макс
+        saturationLevel -= Registry.getMaxSaturationLevel(livingBeingType) * 0.02; // -2% от макс
         if (saturationLevel < 0)
         {
             saturationLevel = 0;

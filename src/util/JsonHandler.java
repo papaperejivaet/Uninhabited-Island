@@ -67,14 +67,15 @@ public class JsonHandler
      * <p>
      * Подходит для более сложных структур (например, {@code Map<String, List<T>>}).
      *
-     * @param path    путь к JSON-файлу
+     * @param filePath    путь к JSON-файлу
      * @param typeRef TypeReference с полной информацией о generic-структуре (ключ — строка)
      * @param <T>     тип значений
      * @return {@code Map<Encyclopedia, T>} — десериализованная мапа с преобразованными ключами
      * @throws JsonMapConvertingException если возникла ошибка при чтении или преобразовании
      */
-    public static <T> Map<Encyclopedia, T> parseData(String path, TypeReference<Map<String, T>> typeRef)
+    public static <T> Map<Encyclopedia, T> parseData(String filePath, TypeReference<Map<String, T>> typeRef)
     {
+        String path = checkPath(filePath);
         try
         {
             Map<String, T> rawData = mapper.readValue(new File(path), typeRef);

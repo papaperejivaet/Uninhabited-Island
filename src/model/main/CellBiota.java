@@ -2,6 +2,7 @@ package model.main;
 
 import lombok.AccessLevel;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import model.Living;
 
@@ -14,6 +15,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
@@ -21,6 +23,8 @@ class CellBiota
 {
     private final Map<Encyclopedia, List<Living>> biota = new ConcurrentHashMap<>();
 
+    @Getter(AccessLevel.PACKAGE)
+    ReentrantLock lock = new ReentrantLock();
 
     void addLivingBeing(Living living)
     {
@@ -33,6 +37,7 @@ class CellBiota
     private void putInMap(Living living)
     {
         List<Living> livings = biota.get(Encyclopedia.getLivingBeing(living.getClass()));
+
         if (livings.size() > Registry.getMaxCellAmount(Encyclopedia.getLivingBeing(living.getClass())))
         {
             living.die(DeathCause.ACCIDENT);

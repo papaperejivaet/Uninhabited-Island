@@ -25,8 +25,7 @@ public class Cell implements Comparable<Cell>
     private final int x;
     @Getter
     private final int y;
-    @Getter
-    private final ReentrantLock lock = new ReentrantLock();
+
 
     private static final int[][] directions = {
             {-1, -1}, {-1, 0}, {-1, 1},
@@ -138,6 +137,11 @@ public class Cell implements Comparable<Cell>
         {
             return Integer.compare(o.x, this.x);
         }
+    }
+
+    public ReentrantLock getLock()
+    {
+        return biota.getLock();
     }
 
     @Override

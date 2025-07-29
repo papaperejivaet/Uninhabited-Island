@@ -18,19 +18,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LifeFormFactory
 {
 
-//    public static Living create(Encyclopedia livingBeing, Cell cell, double age, double saturationLevel)
-//    {
-//        try
-//        {
-//            Constructor<?> constructor = livingBeing.getType().getConstructor(Cell.class, double.class, double.class);
-//            return (Living) constructor.newInstance(cell, age, saturationLevel);
-//        }
-//        catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e)
-//        {
-//            throw new LifeFormCreatingException("Произошла ошибка при создании формы жизни" + Arrays.toString(e.getStackTrace()));
-//        }
-//    }
-
     private static final Map<Encyclopedia, MethodHandle> constructorCache = new ConcurrentHashMap<>();
 
     public static Living create(Encyclopedia livingBeing, int x, int y, double age, double saturationLevel)
