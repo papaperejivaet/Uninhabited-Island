@@ -28,16 +28,22 @@ public class JsonHandler
     private static final ObjectMapper mapper = new ObjectMapper();
 
     /**
-     * Загружает JSON-файл и преобразовывает его в {@code Map<Encyclopedia, T>}.
+     * Загружает JSON-файл и преобразует его в {@code Map<Encyclopedia, T>} по предоставленному классу значений.
      * <p>
-     * Исходный JSON должен представлять собой объект вида {@code Map<String, T>},
-     * где ключи — это имена существ, соответствующие значениям {@link Encyclopedia}.
+     * Ожидаемый формат входного JSON:
+     * <pre>{@code
+     * {
+     *   "WOLF": {...},
+     *   "DEER": {...}
+     * }
+     * }</pre>
+     * где ключи соответствуют значениям {@link Encyclopedia#name()}.
      *
-     * @param filePath       путь к JSON-файлу
-     * @param valueClass класс значений, которые будут храниться в мапе
-     * @param <T>        тип значений
-     * @return {@code Map<Encyclopedia, T>} — десериализованный и приведённый по ключам JSON
-     * @throws JsonMapConvertingException если возникла ошибка при чтении или преобразовании
+     * @param filePath путь к JSON-файлу (можно относительный или абсолютный)
+     * @param valueClass класс значений (например, {@code InfoDTO.class})
+     * @param <T> тип значений, содержащихся в JSON
+     * @return {@code Map<Encyclopedia, T>} — карта, где ключи приведены к Enum-типу {@link Encyclopedia}
+     * @throws JsonMapConvertingException при ошибке чтения или преобразования файла
      */
     public static <T> Map<Encyclopedia, T> parseData(String filePath, Class<T> valueClass)
     {
@@ -63,15 +69,16 @@ public class JsonHandler
     }
 
     /**
-     * Альтернативная версия {@link #parseData(String, Class)}, использующая {@link TypeReference}.
+     * Загружает JSON-файл и преобразует его в {@code Map<Encyclopedia, T>} с помощью {@link TypeReference}.
      * <p>
-     * Подходит для более сложных структур (например, {@code Map<String, List<T>>}).
+     * Подходит для чтения вложенных структур, например:
+     * {@code Map<String, List<Something>>} или {@code Map<String, Map<OtherKey, Value>>}.
      *
-     * @param filePath    путь к JSON-файлу
-     * @param typeRef TypeReference с полной информацией о generic-структуре (ключ — строка)
-     * @param <T>     тип значений
-     * @return {@code Map<Encyclopedia, T>} — десериализованная мапа с преобразованными ключами
-     * @throws JsonMapConvertingException если возникла ошибка при чтении или преобразовании
+     * @param filePath путь к JSON-файлу
+     * @param typeRef {@link TypeReference} с полной generic-структурой исходного объекта
+     * @param <T> тип значений
+     * @return карта с приведёнными ключами типа {@link Encyclopedia}
+     * @throws JsonMapConvertingException при ошибке чтения или преобразования файла
      */
     public static <T> Map<Encyclopedia, T> parseData(String filePath, TypeReference<Map<String, T>> typeRef)
     {
@@ -95,7 +102,16 @@ public class JsonHandler
         }
     }
 
-    //Debugging method
+    /**
+     * Вспомогательный метод для отладки. Аналог {@link #parseData(String, TypeReference)},
+     * но выводит дополнительную информацию в консоль.
+     *
+     * @param path путь к JSON-файлу
+     * @param typeRef тип структуры JSON
+     * @param <T> тип значений
+     * @return карта с ключами {@link Encyclopedia}
+     * @throws JsonMapConvertingException при ошибке десериализации
+     */
      public static <T> Map<Encyclopedia, T> parseDataCheck(String path, TypeReference<Map<String, T>> typeRef) {
         try {
             File file = new File(path);
@@ -155,11 +171,16 @@ public class JsonHandler
      * @throws JsonMapConvertingException если произошла ошибка при чтении или преобразовании JSON
      * @see JsonHandler#parseData(String, TypeReference)
      */
-
     public static Map<Encyclopedia, InfoDTO> parseLifeFormInfo(String path) {
         return parseData(path, new TypeReference<>() {});
-    }
 
+    }
+    /**
+     * Преобразует путь к файлу в абсолютный, если он указан как относительный.
+     *
+     * @param path путь к файлу
+     * @return абсолютный путь к файлу
+     */
     private static String checkPath(String path)
     {
         Path filePath = Path.of(path);

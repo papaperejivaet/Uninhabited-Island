@@ -12,6 +12,10 @@ import java.util.List;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Задача перемещения всех подвижных существ в одной клетке.
+ * Используется на этапе "движения" в одном симуляционном цикле.
+ */
 @AllArgsConstructor
 public class MoveTask implements Runnable
 {
@@ -19,7 +23,13 @@ public class MoveTask implements Runnable
     private final ThreadLocalRandom random = ThreadLocalRandom.current();
     private final Phaser phaser;
 
-
+    /**
+     * Основной метод перемещения.
+     * Для каждого типа живых существ в клетке:
+     * - получает всех представителей;
+     * - вызывает метод {@link #move(List)} для перемещения всех подвижных особей.
+     * После завершения работы — сообщает об этом {@link Phaser}.
+     */
     @Override
     public void run() {
         try {
@@ -37,7 +47,13 @@ public class MoveTask implements Runnable
         }
     }
 
-
+    /**
+     * Перебирает всех существ в списке и перемещает только тех,
+     * которые реализуют интерфейс {@code Mobile}.
+     * Метод {@code move()} вызывается у каждого подвижного существа.
+     *
+     * @param livingBeings список живых существ одного типа
+     */
     private void move(List<Living> livingBeings)
     {
         for (Living livingBeing : livingBeings)

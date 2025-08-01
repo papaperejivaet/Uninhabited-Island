@@ -1,5 +1,8 @@
 package model.properties;
-
+/**
+ * Причина завершения симуляции.
+ * Используется для отображения финального экрана.
+ */
 public enum EndReason
 {
     ALL_DEAD,

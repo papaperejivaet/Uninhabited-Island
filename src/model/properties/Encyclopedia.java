@@ -10,6 +10,14 @@ import model.plants.*;
 
 import java.util.*;
 
+/**
+ * Перечисление всех форм жизни, участвующих в симуляции.
+ * Каждая запись соответствует одному типу существа (животному или растению),
+ * содержит:
+ * - строковое название на русском языке;
+ * - ссылку на класс Java, реализующий поведение.
+ * Служит центральной точкой доступа к типам живых существ.
+ */
 public enum Encyclopedia
 {
     // Плотоядные
@@ -79,6 +87,13 @@ public enum Encyclopedia
         }
     }
 
+    /**
+     * Возвращает тип существа по строковому имени.
+     *
+     * @param name имя существа (регистр не важен)
+     * @return соответствующий объект {@code Encyclopedia}
+     * @throws NoSuchAnimalException если имя не распознано
+     */
     public static Encyclopedia getLivingBeing(String name)
     {
             Encyclopedia livingBeing = names.get(name.toUpperCase());
@@ -89,6 +104,13 @@ public enum Encyclopedia
             return livingBeing;
     }
 
+    /**
+     * Возвращает тип существа по классу Java.
+     *
+     * @param type класс животного или растения
+     * @return соответствующий объект {@code Encyclopedia}
+     * @throws NoSuchAnimalException если класс не зарегистрирован
+     */
     public static Encyclopedia getLivingBeing(Class<? extends Living> type)
     {
         Encyclopedia livingBeing = classes.get(type);
@@ -100,6 +122,12 @@ public enum Encyclopedia
         return livingBeing;
     }
 
+    /**
+     * Возвращает множество форм жизни, соответствующих определённому типу (животное, растение и т.п.).
+     *
+     * @param lbType тип живых существ
+     * @return множество объектов {@code Encyclopedia}, удовлетворяющих типу
+     */
     static Set<Encyclopedia> getByType(LivingBeingType lbType)
     {
         Class<? extends Living> type = lbType.getType();

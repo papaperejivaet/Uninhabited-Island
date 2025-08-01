@@ -17,7 +17,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReentrantLock;
 
-
+/**
+ * Класс-хранилище всех живых существ в клетке.
+ * Обеспечивает потокобезопасное добавление, удаление и доступ к существам.
+ * Работает на основе карты "вид → список особей".
+ */
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 class CellBiota
 {
@@ -26,6 +30,12 @@ class CellBiota
     @Getter(AccessLevel.PACKAGE)
     ReentrantLock lock = new ReentrantLock();
 
+    /**
+     * Добавляет живое существо в биоту клетки.
+     * При превышении лимита по численности вызывает смерть существа {@link Living#die(DeathCause)}.
+     *
+     * @param living добавляемое существо
+     */
     void addLivingBeing(Living living)
     {
         Encyclopedia livingBeing = Encyclopedia.getLivingBeing(living.getClass());
@@ -47,7 +57,12 @@ class CellBiota
     }
 
 
-
+    /**
+     * Удаляет существо из биоты.
+     * Если после удаления список пуст — соответствующий ключ удаляется из карты.
+     *
+     * @param living удаляемое существо
+     */
     public void removeLivingBeing(Living living)
     {
 
@@ -71,6 +86,12 @@ class CellBiota
 
     }
 
+    /**
+     * Возвращает копию списка живых существ указанного типа.
+     *
+     * @param livingBeing вид существа
+     * @return копия списка, либо пустой список, если никого нет
+     */
     public List<Living> getLivingBeings(Encyclopedia livingBeing)
     {
         List<Living> list = biota.get(livingBeing);
@@ -81,12 +102,25 @@ class CellBiota
         return new CopyOnWriteArrayList<>(list);
     }
 
+    /**
+     * Возвращает все типы живых существ, находящихся в клетке.
+     *
+     * @return множество ключей из карты биоты
+     */
     Set<Encyclopedia> getAllLivingBeingTypes()
     {
         return biota.keySet();
     }
 
 
+    /**
+     * Возвращает случайное существо из указанных типов, исключая переданное.
+     * Используется, например, при поедании других существ или поиске партнёра.
+     *
+     * @param baseSet допустимые типы
+     * @param exception исключаемое существо (или null)
+     * @return случайное существо или null
+     */
     Living getRandomLiving(Set<Encyclopedia> baseSet, Living exception) {
         // 1) Скопировать базовый набор и убрать текущего, если надо
         Set<Encyclopedia> typeSet = new HashSet<>(baseSet);
@@ -121,7 +155,13 @@ class CellBiota
 
 
 
-    //Для Drawer
+    /**
+     * Возвращает символ самого многочисленного представителя указанного типа (растения или животные).
+     * Используется для отрисовки визуализации.
+     *
+     * @param livingBeingType категория (ANIMAL, HERBIVORE, CARNIVORE или PLANT)
+     * @return строка-символ существа или "  " (пробел), если никого нет
+     */
     String getCharOfMaxAmount(LivingBeingType livingBeingType)
     {
         Class<? extends Living> type = livingBeingType.getType();
@@ -138,6 +178,12 @@ class CellBiota
         return "  ";
     }
 
+    /**
+     * Проверяет, содержит ли биота хотя бы один из заданных типов.
+     *
+     * @param typeSet множество допустимых типов
+     * @return true, если найден хотя бы один тип
+     */
     boolean containsAny(Set<Encyclopedia> typeSet)
     {
         for (Encyclopedia type : typeSet)
@@ -150,14 +196,5 @@ class CellBiota
         return false;
     }
 
-    int getAmountOf(Encyclopedia type)
-    {
-        List<Living> livings = biota.get(type);
-        if (livings != null)
-        {
-            return livings.size();
-        }
-        return 0;
-    }
 
 }

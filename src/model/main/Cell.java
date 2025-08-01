@@ -1,7 +1,6 @@
 package model.main;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
+
 import lombok.Getter;
 import model.Living;
 import model.properties.Encyclopedia;
@@ -11,7 +10,11 @@ import model.properties.LivingBeingType;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
-
+/**
+ * Представляет клетку острова. Содержит всех обитателей в данной координате,
+ * знает свои координаты и соседние клетки.
+ * Обеспечивает потокобезопасную работу с внутренней флорой и фауной (биотой) через {@link CellBiota}.
+ */
 public class Cell implements Comparable<Cell>
 {
     CellBiota biota = new CellBiota();
@@ -33,7 +36,6 @@ public class Cell implements Comparable<Cell>
             {1, -1},  {1, 0},  {1, 1}
     };
 
-    private final char[][] biggestAmount = new char[2][2];
 
     public Cell(int x, int y)
     {
@@ -41,49 +43,88 @@ public class Cell implements Comparable<Cell>
         this.y = y;
     }
 
+    /**
+     * Добавляет живое существо в текущую клетку.
+     * Делегирует добавление объекту {@link CellBiota}.
+     *
+     * @param living добавляемое существо
+     */
     public void addLivingBeing(Living living)
     {
         biota.addLivingBeing(living);
     }
 
+    /**
+     * Удаляет живое существо из клетки.
+     *
+     * @param living удаляемое существо
+     */
     public void removeLivingBeing(Living living)
     {
         biota.removeLivingBeing(living);
     }
 
+    /**
+     * Возвращает список всех существ определённого вида, находящихся в клетке.
+     *
+     * @param livingBeing вид из {@link Encyclopedia}
+     * @return копия списка живых существ этого вида
+     */
     public List<Living> getLivingBeings(Encyclopedia livingBeing)
     {
         return biota.getLivingBeings(livingBeing);
     }
 
+    /**
+     * Возвращает множество всех видов живых существ, находящихся в клетке.
+     *
+     * @return множество типов из {@link Encyclopedia}
+     */
     public Set<Encyclopedia> getAllLivingBeingTypes()
     {
         return biota.getAllLivingBeingTypes();
     }
 
+    /**
+     * Возвращает случайное живое существо из заданных типов, исключая переданное.
+     *
+     * @param typeSet допустимые типы (например, только травоядные)
+     * @param exception существо, которое нельзя выбрать (может быть null)
+     * @return случайное существо или null, если нет подходящих
+     */
     public Living getRandomLiving(Set<Encyclopedia> typeSet, Living exception)
     {
         return biota.getRandomLiving(typeSet, exception);
     }
 
+    /**
+     * Проверяет, содержит ли клетка хотя бы одно существо из указанной категории (животное, растение).
+     *
+     * @param livingBeingType категория (ANIMAL, HERBIVORE, CARNIVORE или PLANT)
+     * @return true, если в клетке есть хотя бы один представитель
+     */
     public boolean containsAny(LivingBeingType livingBeingType)
     {
         Set<Encyclopedia> typeSet = livingBeingType.getMembers();
-        boolean contains = biota.containsAny(typeSet);
-        return contains;
+        return biota.containsAny(typeSet);
     }
 
-
+    /**
+     * Возвращает символ (строку длиной 2) самого многочисленного представителя указанной категории.
+     * Используется для отрисовки визуального представления острова.
+     *
+     * @param livingBeingType категория (ANIMAL или PLANT)
+     * @return строка-символ или "  ", если в клетке никого нет
+     */
     public String getCharOfMaxAmount(LivingBeingType livingBeingType)
     {
         return biota.getCharOfMaxAmount(livingBeingType);
     }
 
-    public int getAmountOf(Encyclopedia type)
-    {
-       return biota.getAmountOf(type);
-    }
-
+    /**
+     * Ищет и сохраняет ссылки на все соседние клетки.
+     * Используется при построении карты. Повторные вызовы игнорируются.
+     */
     public void findNeighboringCells()
     {
         if (isFound) return;
@@ -139,6 +180,12 @@ public class Cell implements Comparable<Cell>
         }
     }
 
+    /**
+     * Возвращает объект блокировки, связанный с данной клеткой.
+     * Используется для потокобезопасного перемещения и изменения состояния.
+     *
+     * @return {@link ReentrantLock}
+     */
     public ReentrantLock getLock()
     {
         return biota.getLock();

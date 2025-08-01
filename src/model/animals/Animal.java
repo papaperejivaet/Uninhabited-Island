@@ -14,18 +14,34 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Абстрактный класс, представляющий животных на острове.
+ * Расширяет {@link LifeForm} и реализует интерфейс {@link Mobile}.
+ * Добавляет логику передвижения и отслеживания факта перемещения.
+ * Поддерживает потокобезопасное перемещение между клетками с помощью {@link ReentrantLock}.
+ */
 @EqualsAndHashCode(callSuper = true)
 public abstract class Animal extends LifeForm implements Mobile
 {
     boolean hasMoved;
-
+    /**
+     * Создает животное с заданными параметрами.
+     *
+     * @param cell            клетка, в которой находится животное
+     * @param age             возраст животного
+     * @param saturationLevel текущий уровень насыщения
+     */
     protected Animal(Cell cell, double age, double saturationLevel)
     {
         super(cell, age, saturationLevel);
         hasMoved = false;
     }
 
-
+    /**
+     * Выполняет попытку перемещения животного на новую клетку.
+     * Использует неблокирующую синхронизацию с ограничением по времени, чтобы избежать дедлоков.
+     * Обновляет положение, координаты и уменьшает уровень насыщения.
+     */
     @Override
     public void move() {
         if (hasMoved) return;
@@ -53,13 +69,7 @@ public abstract class Animal extends LifeForm implements Mobile
             if (!secondAcquired) return;
 
             // Переместиться
-            currentCell.removeLivingBeing(this);
-            currentCell = to;
-            currentCell.addLivingBeing(this);
-            x = currentCell.getX();
-            y = currentCell.getY();
-            hasMoved = true;
-            decreaseSaturationLevel();
+            changeHabitat(to);
 
         } catch (InterruptedException _) {
             Thread.currentThread().interrupt();
@@ -69,13 +79,33 @@ public abstract class Animal extends LifeForm implements Mobile
         }
     }
 
+    private void changeHabitat(Cell destination)
+    {
+        currentCell.removeLivingBeing(this);
+        currentCell = destination;
+        currentCell.addLivingBeing(this);
+        x = currentCell.getX();
+        y = currentCell.getY();
+        hasMoved = true;
+        decreaseSaturationLevel();
+    }
+
+    /**
+     * Удаляет животное с карты и регистрирует смерть в статистике.
+     *
+     * @param cause причина смерти
+     */
     @Override
     public void die(DeathCause cause)
     {
         super.die(cause);
         Statistics.registerDeath(livingBeingType, cause);
     }
-
+    /**
+     * Обновляет состояние животного при наступлении нового цикла:
+     * - вызывает {@link LifeForm#grow()};
+     * - сбрасывает флаги hasMoved и hasConsumed.
+     */
     @Override
     public void grow()
     {
@@ -84,7 +114,12 @@ public abstract class Animal extends LifeForm implements Mobile
         hasConsumed = false;
     }
 
-
+    /**
+     * Пытается найти новую клетку для перемещения.
+     * Новая клетка выбирается случайным образом, количество шагов зависит от скорости.
+     *
+     * @return клетка, в которую животное переместится
+     */
     private Cell getNewCell()
     {
         ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -103,7 +138,12 @@ public abstract class Animal extends LifeForm implements Mobile
 
         return newCell;
     }
-
+    /**
+     * Пытается найти и съесть доступную пищу.
+     * Если потребление успешно, обновляется статистика.
+     *
+     * @return {@code true}, если пища была найдена и потреблена
+     */
     @Override
     public boolean consume()
     {

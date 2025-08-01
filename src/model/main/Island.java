@@ -16,6 +16,9 @@ import java.util.concurrent.*;
 
 public class Island
 {
+    /**
+     * Двумерная карта острова.
+     */
     @Getter
     private static final Cell[][] islandMap = new Cell[GeneralConstants.HEIGHT][GeneralConstants.LENGTH];
 
@@ -32,6 +35,13 @@ public class Island
         shutdown();
     }
 
+    /**
+     * Запускает бесконечный цикл симуляции, пока не будут нарушены условия продолжения,
+     * проверяемые в {@link Statistics#checkConditions()}.
+     * Внутри каждого цикла:
+     * - выполняется симуляция одного шага (движение, жизнь, размножение);
+     * - отрисовывается текущее состояние поля.
+     */
     private static void startSimulation()
     {
         do
@@ -43,6 +53,11 @@ public class Island
 
     }
 
+    /**
+     * Создаёт сетку клеток (остров) и связывает каждую клетку с её соседями.
+     * Клетки создаются по размеру, заданному в {@link GeneralConstants}, и после этого каждая
+     * клетка определяет и сохраняет список соседних клеток.
+     */
     private static void createMap()
     {
         for (int y = 0; y < islandMap.length; y++)
@@ -62,6 +77,11 @@ public class Island
         }
     }
 
+    /**
+     * Заселяет карту существами из справочника {@link Encyclopedia}.
+     * Для каждого вида создается задача {@link PopulationTask}, которая выполняется в пуле потоков.
+     * После заселения основной поток ожидает завершения всех задач с помощью {@link Phaser}.
+     */
     private static void populateRandomly()
     {
         int livingBeingCounter = Encyclopedia.values().length;
@@ -69,17 +89,29 @@ public class Island
         {
             executor.submit(new PopulationTask(i, phaser));
         }
-       // sleep();
-      //  System.out.println("End of the Population Task, unarrived: " + phaser.getUnarrivedParties());
+
         phaser.arriveAndAwaitAdvance();
     }
 
-
+    /**
+     * Возвращает клетку по координатам.
+     *
+     * @param x координата X
+     * @param y координата Y
+     * @return объект клетки
+     */
     static Cell getCell(int x, int y)
     {
         return islandMap[y][x];
     }
 
+    /**
+     * Выполняет один шаг симуляции, состоящий из следующих этапов:
+     * 1. Передвижение подвижных существ в каждой клетке через {@link MoveTask}.
+     * 2. Жизненные действия (рост, питание, размножение) через {@link LiveTask}.
+     * 3. Сбор статистики и визуализация.
+     * Все задачи запускаются параллельно, синхронизируются с помощью {@link Phaser}.
+     */
     private static void simulate()
     {
         phaser.bulkRegister(GeneralConstants.CELLS_AMOUNT);
@@ -90,9 +122,6 @@ public class Island
                 executor.submit(new MoveTask(cell, phaser));
             }
         }
-        //debug
-      //  sleep();
-       // System.out.println("End of the Move Task, unarrived: " + phaser.getUnarrivedParties());
 
         phaser.arriveAndAwaitAdvance();
 
@@ -104,9 +133,7 @@ public class Island
                 executor.submit(new LiveTask(cell, phaser));
             }
         }
-        //debug
-    //    sleep();
-    //    System.out.println("End of the Live Task, unarrived: " + phaser.getUnarrivedParties());
+
 
         phaser.arriveAndAwaitAdvance();
         sendEveryCellChar();
@@ -114,6 +141,10 @@ public class Island
 
     }
 
+    /**
+     * Сканирует все клетки острова и определяет, какие растения и животные наиболее многочисленны в каждой из них.
+     * Собранные символы передаются в визуализатор {@link Drawer} для отображения на экране.
+     */
     private static void sendEveryCellChar()
     {
         List<String> mostPopularAnimalChars = new ArrayList<>();
@@ -131,7 +162,10 @@ public class Island
         Drawer.receiveMostPopularChars(mostPopularAnimalChars, mostPopularPlantChars);
     }
 
-
+    /**
+     * Завершает работу пула потоков.
+     * Пытается корректно завершить задачи в течение 3 секунд. Если не удаётся — форсирует завершение всех потоков.
+     */
     private static void shutdown()
     {
         executor.shutdown();
@@ -151,16 +185,5 @@ public class Island
 
     }
 
-    private static void sleep()
-    {
-        try
-        {
-            Thread.sleep(300);
-        }
-        catch (InterruptedException e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
 
 }

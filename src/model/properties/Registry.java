@@ -8,14 +8,21 @@ import lombok.NoArgsConstructor;
 
 import java.util.*;
 
-
+/**
+ * Хранилище конфигурационной информации обо всех формах жизни.
+ * Загружает данные из JSON один раз при старте и предоставляет методы доступа.
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Registry
 {
-    private static final Map<Encyclopedia, InfoDTO> livingBeingInfo = JsonHandler.parseLifeFormInfo("src\\info.json");
+    private static final Map<Encyclopedia, InfoDTO> livingBeingInfo = JsonHandler.parseLifeFormInfo(GeneralConstants.INFO_PATH);
 
 
-
+    /**
+     * Возвращает вес существа.
+     * @param type вид существа
+     * @return вес
+     */
     public static Double getWeight(Encyclopedia type)
     {
         InfoDTO lifeFormInfo = livingBeingInfo.get(type);
@@ -46,6 +53,13 @@ public final class Registry
         return lifeFormInfo.getMaxAge();
     }
 
+    /**
+     * Возвращает шанс поедания одной формы жизни другой.
+     *
+     * @param predator хищник
+     * @param prey потенциальная жертва
+     * @return шанс (0–100)
+     */
     public static Integer getEatingChances(Encyclopedia predator, Encyclopedia prey)
     {
         InfoDTO lifeFormInfo = livingBeingInfo.get(predator);
@@ -61,7 +75,12 @@ public final class Registry
     }
 
 
-
+    /**
+     * Вычисляет стартовое количество особей на острове, на основе площади острова и лимита на клетку.
+     *
+     * @param type тип существа
+     * @return стартовое количество
+     */
     public static Integer getStartAmount(Encyclopedia type)
     {
         double startAmount = ((double) (GeneralConstants.HEIGHT + GeneralConstants.LENGTH) / 100) * getMaxCellAmount(type) * 5;

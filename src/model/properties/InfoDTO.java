@@ -6,7 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Map;
-
+/**
+ * DTO-объект, представляющий параметры формы жизни, получаемые из JSON.
+ * Используется для инициализации значений из конфигурационного файла.
+ */
 @Getter(AccessLevel.PACKAGE)
 @Setter(AccessLevel.PACKAGE)
 public class InfoDTO

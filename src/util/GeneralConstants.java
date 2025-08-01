@@ -2,7 +2,11 @@ package util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-
+/**
+ * Утильный класс, содержащий общие константы, используемые в симуляции острова.
+ * <p>
+ * Закрытый конструктор предотвращает создание экземпляров.
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GeneralConstants
 {
@@ -12,4 +16,5 @@ public class GeneralConstants
     public static final int LENGTH = 20;
     public static final int HEIGHT = 20;
     public static final int CELLS_AMOUNT = LENGTH * HEIGHT;
+    public static final String INFO_PATH = "info.json";
 }

@@ -1,6 +1,5 @@
 package model.properties;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import model.Living;
 import model.animals.Animal;
@@ -11,6 +10,10 @@ import model.plants.Plant;
 import java.util.Collections;
 import java.util.Set;
 
+/**
+ * Типы живых существ в экосистеме.
+ * Используется для фильтрации и группировки: животные, растения, хищники, травоядные.
+ */
 public enum LivingBeingType
 {
     ANIMAL(Animal.class),

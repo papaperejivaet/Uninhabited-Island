@@ -14,11 +14,28 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Фабрика для создания экземпляров живых существ на острове.
+ * Использует MethodHandle для вызова конструктора конкретного класса через рефлексию.
+ * Кэширует найденные конструкторы для повышения производительности.
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LifeFormFactory
 {
 
     private static final Map<Encyclopedia, MethodHandle> constructorCache = new ConcurrentHashMap<>();
+
+    /**
+     * Создаёт живое существо заданного типа с указанными параметрами.
+     *
+     * @param livingBeing тип существа
+     * @param x координата X
+     * @param y координата Y
+     * @param age возраст
+     * @param saturationLevel уровень насыщения
+     * @return созданное существо
+     * @throws LifeFormCreatingException если не удаётся создать экземпляр
+     */
 
     public static Living create(Encyclopedia livingBeing, int x, int y, double age, double saturationLevel)
     {
@@ -58,7 +75,14 @@ public class LifeFormFactory
         }
     }
 
-
+    /**
+     * Создаёт новорожденное существо (с нулевым возрастом и полной сытостью).
+     *
+     * @param livingBeing тип существа
+     * @param x координата X
+     * @param y координата Y
+     * @return созданное существо
+     */
     public static Living createNewborn(Encyclopedia livingBeing, int x, int y)
     {
         return create(livingBeing, x, y, 0.0, Registry.getMaxSaturationLevel(livingBeing));

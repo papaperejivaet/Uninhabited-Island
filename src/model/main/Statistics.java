@@ -12,7 +12,15 @@ import view.Drawer;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
+/**
+ * Сервис для сбора и анализа статистики симуляции.
+ * Отслеживает:
+ * - смерти по причинам;
+ * - размножения;
+ * - случаи потребления пищи;
+ * - наличие различных типов существ на клетках.
+ * Также отвечает за определение условий завершения симуляции.
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Statistics
 {
@@ -34,9 +42,12 @@ public class Statistics
     private static final Map<Cell, Boolean> plantContainment = new ConcurrentHashMap<>();
 
 
-
-
-
+    /**
+     * Регистрирует смерть существа и причину.
+     *
+     * @param type тип существа
+     * @param deathCause причина смерти
+     */
     public static void registerDeath(Encyclopedia type, DeathCause deathCause)
     {
         Map<Encyclopedia, Integer> deathMap = getDeathMap(deathCause);
@@ -52,7 +63,12 @@ public class Statistics
     {
         register(type, ateCount);
     }
-
+    /**
+     * Проверяет, какие типы существ присутствуют в клетке,
+     * и обновляет глобальные карты присутствия.
+     *
+     * @param cell клетка острова
+     */
     public static void confirmAvailability(Cell cell)
     {
         boolean containsAny;
@@ -85,7 +101,11 @@ public class Statistics
         Integer count = statisticMap.get(type);
         statisticMap.put(type, ++count);
     }
-
+    /**
+     * Проверяет, выполнены ли условия завершения симуляции.
+     *
+     * @return true — продолжить симуляцию, false — завершить
+     */
     protected static boolean checkConditions()
     {
         if (!animalContainment.containsValue(true))
@@ -115,7 +135,9 @@ public class Statistics
 
         return true;
     }
-
+    /**
+     * Увеличивает счётчик симуляционных циклов.
+     */
     protected static void nextCycle()
     {
         currentCycleNumber++;
